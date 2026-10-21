@@ -67,6 +67,8 @@ around them.
 | `--color-button-bg` / `--color-button-text` | bright orange / black | Buttons (7:1). Never white on bright orange (2.8:1) |
 | `--color-input-border` | `#737373`  | Form control borders (3:1 against page and surface) |
 | `--color-error`        | `#b91c1c` light, `#f87171` dark | Error text and invalid-field borders |
+| `--color-bar-strong`   | `#fafafa`  | Headings on black (the home hero) |
+| `--color-badge-bg` / `--color-badge-text` | orange-100 / orange-800 light, orange-950 / orange-300 dark | Status badges and status messages |
 
 - **Header and footer are black bars** in both color schemes, with the
   brand name in bright orange and an orange border under the header.
@@ -79,9 +81,27 @@ around them.
 - Grays are neutral (no blue or warm tint) so they sit with black and orange.
 - **Header and footer links** use the bar colors, never `--color-accent`,
   which is only 3.8:1 on black.
+- **Avatars** use black on bright orange (7:1), the same pair as buttons.
 - **Non-text contrast is at least 3:1:** focus rings and form control
   borders. The contrast test covers these pairs too, and every color token
   must be used by some rule.
+
+## Visual design
+
+The look is modern and calm: orange and black, with neutral surfaces.
+
+- **Shape and depth.** Corners use `--radius` (`0.75rem`), and cards use
+  `--shadow`, rising to `--shadow-raised` on hover.
+- **Components.** Each is styled once in `public/styles.css`:
+  - buttons: a primary pill in orange, and a secondary outline;
+  - cards: the whole card is the link, via a stretched heading link;
+  - avatars, badges, panels, and page headers;
+  - the home hero.
+- **Inline SVG only.** The logo mark is an inline SVG, hidden from screen
+  readers, and `public/favicon.svg` is the same mark. There are no other
+  images and no web fonts.
+- **Motion.** Movement is small: hover lifts of 1–2px. It is turned off
+  under `prefers-reduced-motion: reduce`.
 
 ## Responsive design
 
@@ -104,8 +124,10 @@ is responsive from the phase that introduces it, not fixed up later.
 - **No horizontal scrolling** at any width from 320px up. Media scales down
   to its container, and long words wrap. Wide content such as tables gets
   its own scroll container or stacks into cards on small screens.
-- **Touch-friendly.** Links, buttons, and form controls have a target at
-  least `--touch-target` (2.75rem, 44px) tall. Form inputs use at least
+- **Touch-friendly.** Every link, button, and form control has a target at
+  least `--touch-target` (2.75rem, 44px) tall. This includes links inside
+  cards, empty states, and "back" links. A link inside running text uses
+  the `.back-link` class or becomes a button. Form inputs use at least
   `1rem` text so phones don't zoom in on focus.
 - **Viewport meta.** `Layout` always includes
   `<meta name="viewport" content="width=device-width, initial-scale=1">`.
@@ -115,9 +137,15 @@ is responsive from the phase that introduces it, not fixed up later.
 - **Automated:** Vitest tests in `src/styles.test.ts` check the stylesheet
   follows these rules (mobile-first queries, standard breakpoints, no fixed
   pixel widths, touch targets), and component tests check the viewport meta.
-- **Manual:** each feature's `validation.md` lists a check at 320px, 375px,
-  768px, and 1280px wide in browser dev tools: no horizontal scrolling,
-  nothing cut off or overlapping, and tappable controls.
+- **Browser:** each feature's `validation.md` lists a check at 320px,
+  375px, 768px, and 1280px wide, in light and dark mode. It covers:
+  - no horizontal scrolling;
+  - nothing cut off or overlapping;
+  - tappable controls of at least 44px;
+  - no console errors or script requests.
+
+  A headless Chrome script can run it, taking screenshots for a person to
+  review.
 
 ## Testing and validation
 

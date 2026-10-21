@@ -9,8 +9,10 @@ type AgentsPageProps = {
 export function AgentsPage({ agents }: AgentsPageProps) {
   return (
     <Layout title="Agents – AgentClinic" current="agents">
-      <h1>Agents</h1>
-      <p>The agents in the clinic's care.</p>
+      <div class="page-header">
+        <h1>Agents</h1>
+        <p class="lead">The agents in the clinic's care. Choose one to see its care.</p>
+      </div>
       <ul class="card-grid">
         {agents.map((agent) => (
           <AgentCard agent={agent} />

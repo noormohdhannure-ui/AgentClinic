@@ -225,6 +225,24 @@ describe("accessibility base", () => {
     expect(rule(".button:visited")).toContain("color: var(--color-button-text)");
   });
 
+  it("makes a linked card's heading link cover the whole card", () => {
+    expect(rule(".card")).toContain("position: relative");
+    const overlay = rule(".card-link h2 a::after");
+    expect(overlay).toContain("position: absolute");
+    expect(overlay).toContain("inset: 0");
+    expect(rule(".card form")).toContain("z-index: 1");
+  });
+
+  it("stops hover movement for people who prefer reduced motion", () => {
+    expect(css).toMatch(
+      /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*transition: none !important[\s\S]*transform: none/,
+    );
+  });
+
+  it("gives the hero the bars' focus color", () => {
+    expect(rule(".hero")).toContain("--color-focus: var(--color-brand-orange)");
+  });
+
   it("keeps the skip link out of the body grid", () => {
     expect(rule(".skip-link")).toContain("position: absolute");
     expect(rule(".skip-link")).toContain("min-height: var(--touch-target)");
@@ -250,6 +268,13 @@ const contrastPairs: [string, string, number, "page" | "bar"][] = [
   ["--color-button-text", "--color-button-bg", 4.5, "page"],
   ["--color-input-border", "--color-bg", 3, "page"],
   ["--color-input-border", "--color-surface", 3, "page"],
+  // Secondary buttons: text-colored label, input-border outline.
+  ["--color-text", "--color-surface", 4.5, "page"],
+  ["--color-badge-text", "--color-badge-bg", 4.5, "page"],
+  // Avatars: black on bright orange.
+  ["--color-brand-black", "--color-brand-orange", 4.5, "page"],
+  // The hero: headings, lead text, and focus on black.
+  ["--color-bar-strong", "--color-bar-bg", 4.5, "bar"],
   // Links and visited links share the accent color.
   ["--color-accent", "--color-bg", 4.5, "page"],
   ["--color-focus", "--color-bg", 3, "page"],

@@ -89,3 +89,19 @@ All notable changes to AgentClinic, newest first.
   booking routes are mounted, when the cancelled message shows, running the
   server from the project root, footer text size, who does the browser
   checks, and that the changelog is committed by the person merging.
+- Gave AgentClinic a modern look in its orange and black brand
+  (`specs/2026-10-22-mvp-launch/`). The design adds:
+  - a logo mark and favicon;
+  - a home page hero with "How it works";
+  - cards you can click anywhere, with avatars;
+  - a two-column agent page;
+  - status badges, outline buttons, and gentle hover effects that respect
+    reduced motion.
+- Fixed two defects found by testing in Chrome at every width and in both
+  color schemes: links under the 44px touch target, and a missing favicon
+  that logged a 404 on every page.
+- Rewrote the README with setup instructions, a feature tour, the project
+  layout, screenshots, and a case study of how the project was built with
+  spec-driven development.
+- Cleaned up the repository: moved the constitution prompt log to `docs/`,
+  and stopped tracking editor settings (`.idea/`).

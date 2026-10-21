@@ -33,19 +33,48 @@ describe("GET /", () => {
 
     expect(body).toMatch(/<header[\s\S]*<nav aria-label="Main">[\s\S]*<\/nav>[\s\S]*<\/header>/);
     expect(body).toContain('<a href="/" aria-current="page">Home</a>');
-    expect(body).toContain('<h3><a href="/ailments">Ailments</a></h3>');
-    expect(body).toContain('<h3><a href="/therapies">Therapies</a></h3>');
-    expect(body).toContain('<h3><a href="/appointments">Appointments</a></h3>');
+    for (const [href, name] of [
+      ["/ailments", "Ailments"],
+      ["/therapies", "Therapies"],
+      ["/appointments", "Appointments"],
+    ]) {
+      expect(body).toMatch(
+        new RegExp(`<li class="card card-link"><h3><a href="${href}">${name}</a></h3>`),
+      );
+    }
     expect(body).not.toContain("<script");
   });
 
   it("describes the clinic's services", async () => {
     const body = await (await app.request("/")).text();
 
-    expect(body).toContain("<h2>Our services</h2>");
+    expect(body).toContain('<h2 id="services-heading">Our services</h2>');
     expect(body).toContain("See the conditions agents bring to the clinic.");
     expect(body).toContain("Browse the treatments we offer for each ailment.");
     expect(body).toContain("Book time with the clinic and manage your visits.");
+  });
+});
+
+describe("home page hero and steps", () => {
+  it("opens with a hero and two actions", async () => {
+    const body = await (await app.request("/")).text();
+
+    expect(body).toMatch(
+      /<section class="hero"><p class="eyebrow">A clinic for AI agents<\/p><h1>AgentClinic<\/h1>/,
+    );
+    expect(body).toContain('<a class="button" href="/agents">Meet the agents</a>');
+    expect(body).toContain(
+      '<a class="button button-secondary" href="/appointments">See appointments</a>',
+    );
+  });
+
+  it("explains how it works in three steps", async () => {
+    const body = await (await app.request("/")).text();
+
+    expect(body).toContain('<h2 id="steps-heading">How it works</h2>');
+    expect(body).toMatch(
+      /<ol class="steps"><li><h3>Report an ailment<\/h3><p>Tell the clinic what&#39;s wrong.<\/p><\/li><li><h3>Get a therapy<\/h3><p>See treatments matched to each ailment.<\/p><\/li><li><h3>Book a visit<\/h3><p>Pick a time that suits you.<\/p><\/li><\/ol>/,
+    );
   });
 });
 
@@ -61,9 +90,18 @@ describe("unknown routes", () => {
     expect(body).toContain("<title>Page not found – AgentClinic</title>");
     expect(body).toContain("<h1>Page not found</h1>");
     expect(body).toContain("We couldn&#39;t find that page.");
-    expect(body).toContain('<a href="/">Back to the home page</a>');
+    expect(body).toContain('<a class="button" href="/">Back to the home page</a>');
     expect(body).toContain('<nav aria-label="Main">');
     expect(body).not.toContain("aria-current");
+  });
+});
+
+describe("GET /favicon.svg", () => {
+  it("serves the logo mark as the favicon", async () => {
+    const res = await app.request("/favicon.svg");
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Content-Type")).toMatch(/^image\/svg\+xml/);
   });
 });
 

@@ -27,12 +27,15 @@ export function BookAppointmentPage({
 
   return (
     <Layout title={title} current="agents" currentIsPage={false}>
+      <a class="back-link" href={`/agents/${agent.id}`}>
+        ← Back to {agent.name}
+      </a>
       <FormErrors errors={errors} />
-      <h1>Book an appointment</h1>
-      <p>
-        For <a href={`/agents/${agent.id}`}>{agent.name}</a>. Times are in clinic time.
-      </p>
-      <form class="form" method="post" action={`/agents/${agent.id}/appointments`}>
+      <div class="page-header">
+        <h1>Book an appointment</h1>
+        <p class="lead">For {agent.name}. Times are in clinic time.</p>
+      </div>
+      <form class="form panel" method="post" action={`/agents/${agent.id}/appointments`}>
         <div class="field">
           <label for="scheduled_at">Date and time</label>
           <p id="scheduled_at-hint" class="hint">

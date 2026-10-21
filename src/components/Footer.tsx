@@ -2,6 +2,7 @@ export function Footer() {
   return (
     <footer class="site-footer">
       <p>&copy; {new Date().getFullYear()} AgentClinic</p>
+      <p>Built with spec-driven development.</p>
     </footer>
   );
 }

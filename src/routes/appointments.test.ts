@@ -68,11 +68,12 @@ describe("POST /agents/:id/appointments", () => {
     expect(page.status).toBe(200);
     const body = await page.text();
     expect(body).toContain("<h1>Appointment booked</h1>");
-    expect(body).toContain('<a href="/agents/1">Ada</a>');
     expect(body).toContain('<time datetime="2026-11-03T10:00">3 Nov 2026, 10:00</time> (clinic time)');
+    expect(body).toContain('<a class="back-link" href="/agents/1">Ada</a>');
     expect(body).toContain("<dd>Follow-up</dd>");
-    expect(body).toContain('<a href="/appointments">View all appointments</a>');
-    expect(body).toContain('<a href="/agents/1">Back to Ada</a>');
+    expect(body).toContain('<span class="badge">Booked</span>');
+    expect(body).toContain('<a class="button" href="/appointments">View all appointments</a>');
+    expect(body).toContain('<a class="button button-secondary" href="/agents/1">Back to Ada</a>');
     expect(body).toContain('<a href="/appointments" aria-current="true">Appointments</a>');
   });
 
@@ -190,7 +191,9 @@ describe("GET /appointments", () => {
     expect(body).toContain("<title>Appointments – AgentClinic</title>");
     expect(body).toContain('<a href="/appointments" aria-current="page">Appointments</a>');
     expect(body).toContain("No upcoming appointments.");
-    expect(body).toContain('<a href="/agents">Choose an agent to book</a>');
+    expect(body).toContain(
+      '<a class="button button-secondary" href="/agents">Choose an agent to book</a>',
+    );
   });
 
   it("lists upcoming booked appointments soonest first, leaving out past and cancelled", async () => {
@@ -211,7 +214,10 @@ describe("GET /appointments", () => {
     expect(body).toContain('<h2><a href="/agents/1">Ada</a></h2>');
     expect(body).toContain('<time datetime="2026-11-03T10:00">3 Nov 2026, 10:00</time>');
     expect(body).toContain(
-      '<button type="submit" class="button" aria-label="Cancel appointment for Ada on 3 Nov 2026, 10:00">Cancel</button>',
+      '<button type="submit" class="button button-secondary" aria-label="Cancel appointment for Ada on 3 Nov 2026, 10:00">Cancel</button>',
+    );
+    expect(body).toContain(
+      '<a class="back-link card-action" href="/appointments/2">Details</a>',
     );
   });
 
@@ -250,7 +256,7 @@ describe("POST /appointments/:id/cancel", () => {
 
     expect(res.status).toBe(200);
     const body = await res.text();
-    expect(body).toContain("<dd>Cancelled</dd>");
+    expect(body).toContain('<span class="badge badge-neutral">Cancelled</span>');
     expect(body).not.toContain('/cancel"');
   });
 

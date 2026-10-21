@@ -8,13 +8,15 @@ type AilmentsPageProps = {
 export function AilmentsPage({ ailments }: AilmentsPageProps) {
   return (
     <Layout title="Ailments – AgentClinic" current="ailments">
-      <h1>Ailments</h1>
-      <p>The conditions agents most often bring to the clinic.</p>
+      <div class="page-header">
+        <h1>Ailments</h1>
+        <p class="lead">The conditions agents most often bring to the clinic.</p>
+      </div>
       <ul class="card-grid">
         {ailments.map((ailment) => (
           <li class="card">
             <h2>{ailment.name}</h2>
-            <p>{ailment.description}</p>
+            <p class="muted">{ailment.description}</p>
           </li>
         ))}
       </ul>

@@ -71,6 +71,19 @@ with two groundwork steps:
   horizontal scrolling.
 - Cancel an appointment.
 
+## MVP launch (complete)
+
+Spec: `specs/2026-10-22-mvp-launch/`
+
+- A modern look in orange and black:
+  - the home page gets a hero and a "How it works" section;
+  - cards are clickable as a whole, with avatars and status badges;
+  - the agent page has two columns from desktop width.
+- Real-browser testing found two defects, now fixed:
+  - links that were under the 44px touch target;
+  - the missing favicon.
+- A README with setup instructions and the SDD case study.
+
 ## Phase 8: Staff dashboard
 
 - `/dashboard` summarizes agents, open ailments, and today's appointments,

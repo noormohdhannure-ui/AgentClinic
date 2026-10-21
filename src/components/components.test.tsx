@@ -27,7 +27,9 @@ describe("Header", () => {
     const html = String(<Header />);
 
     expect(html).toMatch(/^<header class="site-header">/);
-    expect(html).toContain('<a class="brand" href="/">AgentClinic</a>');
+    expect(html).toMatch(
+      /<a class="brand" href="\/"><svg class="brand-mark"[^>]*aria-hidden="true"[\s\S]*<\/svg>AgentClinic<\/a>/,
+    );
   });
 
   it("includes the main nav after the brand", () => {
@@ -65,7 +67,8 @@ describe("AgentCard", () => {
     const agent = { id: 3, name: "Ledger", role: "Spreadsheet analyst", human: "A finance team", bio: "" };
     const html = String(<AgentCard agent={agent} />);
 
-    expect(html).toMatch(/^<li class="card">/);
+    expect(html).toMatch(/^<li class="card card-link">/);
+    expect(html).toContain('<span class="avatar" aria-hidden="true">L</span>');
     expect(html).toContain('<h2><a href="/agents/3">Ledger</a></h2>');
     expect(html).toContain('<p class="muted">Spreadsheet analyst</p>');
     expect(html).toContain("Works for: A finance team");
@@ -104,7 +107,7 @@ describe("EmptyState", () => {
     );
 
     expect(html).toContain("<p>Nothing here.</p>");
-    expect(html).toContain('<a href="/agents">Go</a>');
+    expect(html).toContain('<a class="button button-secondary" href="/agents">Go</a>');
     expect(String(<EmptyState message="Nothing here." />)).not.toContain("<a");
   });
 });
@@ -135,6 +138,7 @@ describe("Footer", () => {
 
     expect(html).toMatch(/^<footer class="site-footer">/);
     expect(html).toContain(`© ${new Date().getFullYear()} AgentClinic`);
+    expect(html).toContain("<p>Built with spec-driven development.</p>");
   });
 });
 
@@ -148,6 +152,8 @@ describe("Layout", () => {
       '<meta name="viewport" content="width=device-width, initial-scale=1"/>',
     );
     expect(html).toContain("<title>Test page</title>");
+    expect(html).toContain('<meta name="theme-color" content="#0a0a0a"/>');
+    expect(html).toContain('<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>');
     expect(html).toContain('<link rel="stylesheet" href="/styles.css"/>');
   });
 

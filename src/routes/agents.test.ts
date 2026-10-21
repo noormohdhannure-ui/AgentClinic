@@ -91,7 +91,9 @@ describe("recommended therapies", () => {
     const body = await (await app.request("/agents/3")).text();
 
     expect(body).toContain("No recommendations yet.");
-    expect(body).toContain('<a href="#report-ailment">Report an ailment</a>');
+    expect(body).toContain(
+      '<a class="button button-secondary" href="#report-ailment">Report an ailment</a>',
+    );
   });
 
   it("adds a new report's therapies without duplicates", async () => {

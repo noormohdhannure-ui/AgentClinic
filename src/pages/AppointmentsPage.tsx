@@ -12,9 +12,11 @@ type AppointmentsPageProps = {
 export function AppointmentsPage({ appointments, cancelled = false }: AppointmentsPageProps) {
   return (
     <Layout title="Appointments – AgentClinic" current="appointments">
-      <h1>Appointments</h1>
+      <div class="page-header">
+        <h1>Appointments</h1>
+        <p class="lead">Upcoming appointments, soonest first. Times are in clinic time.</p>
+      </div>
       {cancelled && <StatusMessage message="Appointment cancelled." />}
-      <p class="muted">Upcoming appointments, soonest first. Times are in clinic time.</p>
       {appointments.length === 0 ? (
         <EmptyState
           message="No upcoming appointments."
@@ -26,25 +28,34 @@ export function AppointmentsPage({ appointments, cancelled = false }: Appointmen
             const when = formatWhen(appointment.scheduledAt);
             return (
               <li class="card">
-                <h2>
-                  <a href={`/agents/${appointment.agentId}`}>{appointment.agentName}</a>
-                </h2>
-                <p>
-                  <time datetime={appointment.scheduledAt}>{when}</time>
-                </p>
+                <div class="card-head">
+                  <span class="avatar" aria-hidden="true">
+                    {appointment.agentName.charAt(0)}
+                  </span>
+                  <div>
+                    <h2>
+                      <a href={`/agents/${appointment.agentId}`}>{appointment.agentName}</a>
+                    </h2>
+                    <p class="card-meta">
+                      <time datetime={appointment.scheduledAt}>{when}</time>
+                    </p>
+                  </div>
+                </div>
                 {appointment.reason && <p>{appointment.reason}</p>}
-                <p>
-                  <a href={`/appointments/${appointment.id}`}>Details</a>
-                </p>
-                <form method="post" action={`/appointments/${appointment.id}/cancel`}>
-                  <button
-                    type="submit"
-                    class="button"
-                    aria-label={`Cancel appointment for ${appointment.agentName} on ${when}`}
-                  >
-                    Cancel
-                  </button>
-                </form>
+                <div class="card-actions">
+                  <a class="back-link card-action" href={`/appointments/${appointment.id}`}>
+                    Details
+                  </a>
+                  <form method="post" action={`/appointments/${appointment.id}/cancel`}>
+                    <button
+                      type="submit"
+                      class="button button-secondary"
+                      aria-label={`Cancel appointment for ${appointment.agentName} on ${when}`}
+                    >
+                      Cancel
+                    </button>
+                  </form>
+                </div>
               </li>
             );
           })}

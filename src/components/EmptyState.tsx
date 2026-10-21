@@ -9,7 +9,9 @@ export function EmptyState({ message, action }: EmptyStateProps) {
       <p>{message}</p>
       {action && (
         <p>
-          <a href={action.href}>{action.label}</a>
+          <a class="button button-secondary" href={action.href}>
+            {action.label}
+          </a>
         </p>
       )}
     </div>
