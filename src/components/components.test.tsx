@@ -4,11 +4,13 @@ import * as FooterModule from "./Footer.js";
 import * as HeaderModule from "./Header.js";
 import * as LayoutModule from "./Layout.js";
 import * as MainModule from "./Main.js";
+import * as NavModule from "./Nav.js";
 
 const { Footer } = FooterModule;
 const { Header } = HeaderModule;
 const { Layout } = LayoutModule;
 const { Main } = MainModule;
+const { Nav } = NavModule;
 
 describe("Header", () => {
   it("renders the brand link to the home page", () => {
@@ -16,6 +18,35 @@ describe("Header", () => {
 
     expect(html).toMatch(/^<header class="site-header">/);
     expect(html).toContain('<a class="brand" href="/">AgentClinic</a>');
+  });
+
+  it("includes the main nav after the brand", () => {
+    const html = String(<Header current="home" />);
+
+    expect(html).toMatch(/<\/a><nav aria-label="Main">/);
+    expect(html).toContain('aria-current="page"');
+  });
+});
+
+describe("Nav", () => {
+  it("renders the main nav with a link per section", () => {
+    const html = String(<Nav />);
+
+    expect(html).toMatch(/^<nav aria-label="Main"><ul class="nav-list">/);
+    expect(html).toContain('<a href="/">Home</a>');
+    expect(html).not.toContain("aria-current");
+  });
+
+  it("marks the current section's index page", () => {
+    expect(String(<Nav current="home" />)).toContain(
+      '<a href="/" aria-current="page">Home</a>',
+    );
+  });
+
+  it("marks the section of a page under it", () => {
+    expect(String(<Nav current="home" currentIsPage={false} />)).toContain(
+      '<a href="/" aria-current="true">Home</a>',
+    );
   });
 });
 
@@ -77,6 +108,7 @@ describe("component files", () => {
     ["Main", MainModule],
     ["Footer", FooterModule],
     ["Layout", LayoutModule],
+    ["Nav", NavModule],
   ])("%s.tsx exports only its component", (name, module) => {
     expect(Object.keys(module)).toEqual([name]);
   });

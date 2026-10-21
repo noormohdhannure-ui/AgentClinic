@@ -196,6 +196,14 @@ describe("accessibility base", () => {
     );
   });
 
+  it("marks the current nav link by underline as well as color", () => {
+    const current = rule(".nav-list a[aria-current]");
+
+    expect(current).toContain("color: var(--color-brand-orange)");
+    expect(current).toContain("text-decoration: underline");
+    expect(rule(".nav-list a")).toContain("min-height: var(--touch-target)");
+  });
+
   it("keeps the skip link out of the body grid", () => {
     expect(rule(".skip-link")).toContain("position: absolute");
     expect(rule(".skip-link")).toContain("min-height: var(--touch-target)");

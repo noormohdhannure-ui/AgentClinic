@@ -26,23 +26,39 @@ describe("GET /", () => {
     expect(body).toContain('<link rel="stylesheet" href="/styles.css"/>');
   });
 
-  it("has only the skip and brand links and no client-side JavaScript", async () => {
+  it("has the main nav with Home as the current page", async () => {
     const body = await (await app.request("/")).text();
 
-    expect(body.match(/<a\b[^>]*>/g)).toEqual([
-      '<a class="skip-link" href="#main">',
-      '<a class="brand" href="/">',
-    ]);
+    expect(body).toMatch(/<header[\s\S]*<nav aria-label="Main">[\s\S]*<\/nav>[\s\S]*<\/header>/);
+    expect(body).toContain('<a href="/" aria-current="page">Home</a>');
     expect(body).not.toContain("<script");
-    expect(body).not.toContain("<nav");
+  });
+
+  it("describes the clinic's services", async () => {
+    const body = await (await app.request("/")).text();
+
+    expect(body).toContain("<h2>Our services</h2>");
+    expect(body).toContain("See the conditions agents bring to the clinic.");
+    expect(body).toContain("Browse the treatments we offer for each ailment.");
+    expect(body).toContain("Book time with the clinic and manage your visits.");
   });
 });
 
 describe("unknown routes", () => {
-  it("return 404", async () => {
-    const res = await app.request("/agents");
+  it("return a friendly 404 page inside the layout", async () => {
+    const res = await app.request("/no-such-page");
 
     expect(res.status).toBe(404);
+    expect(res.headers.get("Content-Type")).toMatch(/^text\/html/);
+
+    const body = await res.text();
+    expect(body).toMatch(/^<!doctype html>/);
+    expect(body).toContain("<title>Page not found – AgentClinic</title>");
+    expect(body).toContain("<h1>Page not found</h1>");
+    expect(body).toContain("We couldn&#39;t find that page.");
+    expect(body).toContain('<a href="/">Back to the home page</a>');
+    expect(body).toContain('<nav aria-label="Main">');
+    expect(body).not.toContain("aria-current");
   });
 });
 

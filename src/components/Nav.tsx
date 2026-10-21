@@ -1,0 +1,34 @@
+export type Section = "home" | "agents" | "ailments" | "therapies" | "appointments";
+
+// Each section is added here in the step that builds it, so the nav never
+// links to a page that doesn't exist yet.
+const sections: { key: Section; label: string; href: string }[] = [
+  { key: "home", label: "Home", href: "/" },
+];
+
+type NavProps = {
+  current?: Section;
+  // True on the section's own index page; false on pages under it.
+  currentIsPage?: boolean;
+};
+
+export function Nav({ current, currentIsPage = true }: NavProps) {
+  return (
+    <nav aria-label="Main">
+      <ul class="nav-list">
+        {sections.map((section) => (
+          <li>
+            <a
+              href={section.href}
+              aria-current={
+                section.key === current ? (currentIsPage ? "page" : "true") : undefined
+              }
+            >
+              {section.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
