@@ -62,7 +62,11 @@ around them.
 | ---------------------- | --------- | ---------------------------------------- |
 | `--color-brand-orange` | `#f97316` | Brand name, header accent border, highlights on black |
 | `--color-brand-black`  | `#0a0a0a` | Header and footer bars, body text (light scheme), page background (dark scheme) |
-| `--color-accent`       | `#c2410c` light, `#fb923c` dark | Orange for links and text on the page background |
+| `--color-accent`       | `#c2410c` light, `#fb923c` dark | Orange for links (visited too) and text on the page background |
+| `--color-focus`        | `#c2410c` light, bright orange dark and on the bars | `:focus-visible` outline (3:1 against what it sits on) |
+| `--color-button-bg` / `--color-button-text` | bright orange / black | Buttons (7:1). Never white on bright orange (2.8:1) |
+| `--color-input-border` | `#737373`  | Form control borders (3:1 against page and surface) |
+| `--color-error`        | `#b91c1c` light, `#f87171` dark | Error text and invalid-field borders |
 
 - **Header and footer are black bars** in both color schemes, with the
   brand name in bright orange and an orange border under the header.
@@ -73,6 +77,11 @@ around them.
   Vitest tests in `src/styles.test.ts` check the brand tokens and compute
   the contrast of every text and background pair.
 - Grays are neutral (no blue or warm tint) so they sit with black and orange.
+- **Header and footer links** use the bar colors, never `--color-accent`,
+  which is only 3.8:1 on black.
+- **Non-text contrast is at least 3:1:** focus rings and form control
+  borders. The contrast test covers these pairs too, and every color token
+  must be used by some rule.
 
 ## Responsive design
 
@@ -118,20 +127,29 @@ merged. We prove it with Vitest tests.
   written as a test, it goes under the manual checks instead.
 - **Route tests use `app.request()`.** Tests import the Hono app and send
   requests to it directly, without starting a server or opening a port.
-- **Tests live next to the code** as `*.test.ts` or `*.test.tsx`, and are
-  left out of the build. Because they are outside `tsconfig.json`, `.tsx`
-  test files start with `/** @jsxImportSource hono/jsx */`.
+- **Tests live next to the code** as `*.test.ts` or `*.test.tsx`. Shared
+  test helpers live in `src/test/`.
+- **Tests are type-checked.** `tsconfig.json` includes every file in `src/`,
+  tests too, and is used for type-checking. `tsconfig.build.json` extends
+  it and leaves out the tests and `src/test/`, so they never reach `dist/`.
+  Vitest reads the JSX settings from `tsconfig.json`, so test files need no
+  JSX pragma. After changing a tsconfig, run `npx vitest --clearCache`:
+  Vitest caches transformed files by content, not by config.
+- **Route tests use a fresh database.** `createTestApp()` from
+  `src/test/helpers.ts` opens an in-memory database and passes a fixed
+  `now`, so tests don't depend on the clock.
 - **Component tests render JSX directly.** Render a component and check its
   HTML with `String(<Component />)`; no browser or DOM library is needed.
-- **One command to validate.** `npm run validate` builds the project with
-  `tsc` and then runs the full Vitest suite once. It must pass before a
-  feature branch is merged.
+- **One command to validate.** `npm run validate` type-checks everything,
+  builds the project, and then runs the full Vitest suite once. It must
+  pass before a feature branch is merged.
 
 | Script             | Command                          | Use                                   |
 | ------------------ | -------------------------------- | ------------------------------------- |
 | `npm test`         | `vitest run`                     | Run the tests once                    |
 | `npm run test:watch` | `vitest`                       | Re-run tests on file changes while working |
-| `npm run validate` | `npm run build && npm test`      | Merge check: build, then all tests    |
+| `npm run build`    | `tsc -p tsconfig.build.json`     | Build `dist/`, without the tests      |
+| `npm run validate` | `tsc --noEmit && npm run build && npm test` | Merge check: type-check, build, then all tests |
 
 ## Database: SQLite
 
@@ -140,7 +158,32 @@ This keeps setup to `npm install`, which suits reliability, course students,
 and live demos.
 
 - Driver: `better-sqlite3`, which has a simple synchronous API and is
-  dependable.
+  dependable. Version 13 ships prebuilt binaries, including Windows x64. If
+  npm asks to approve its `node-gyp` install script, don't: building from
+  source needs Visual Studio build tools, and the prebuilt binary works
+  without it.
 - Database file lives at `data/agentclinic.db` and is git-ignored.
-- Schema and seed data are applied by plain SQL scripts at startup.
+- **Migrations.** The schema and seed data are an ordered list of SQL
+  strings in `src/db/migrations.ts`, applied at startup by `openDb()`.
+  `PRAGMA user_version` records how many have run, so each runs once per
+  database file. Each migration creates its tables and inserts the seed
+  data that goes with them. Never edit a shipped migration; add a new one.
+  The SQL lives in TypeScript rather than `.sql` files, because `tsc` doesn't
+  copy `.sql` files into `dist/`.
+- Foreign keys are on. Queries live in one file per feature under
+  `src/db/`; routes don't contain SQL.
 - Tests use an in-memory database (`:memory:`) so each run starts clean.
+
+## Time
+
+Times are server-local strings in the form `YYYY-MM-DDTHH:MM`, the same
+format a `datetime-local` input sends, so they compare correctly as
+strings. The app gets the current time from `localNow()` in `src/time.ts`,
+built from local getters; never use `toISOString()`, which is UTC. Pages
+say that times are in clinic time.
+
+Two limits are accepted for now:
+
+- During the daylight-saving fall-back hour, local times are ambiguous.
+- Moving the server to another time zone shifts the meaning of every
+  stored time.

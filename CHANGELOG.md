@@ -49,3 +49,35 @@ All notable changes to AgentClinic, newest first.
     titles, and that no page ships client JavaScript;
   - a manual responsive, keyboard, and screen-reader pass.
 - Revised the MVP spec after product, engineering, and QA reviews.
+- Built the MVP (`specs/2026-10-22-mvp/`), roadmap Phases 2–7. The full
+  care loop now works in the browser: find an agent, report an ailment, see
+  recommended therapies, book an appointment, and view or cancel it.
+- Added test tooling: test files are now type-checked, with a separate
+  `tsconfig.build.json` for the build, and `npm run validate` type-checks
+  first. The style tests now ignore CSS comments, which could previously
+  hide a real contrast failure.
+- Added an accessibility base: underlined accent-colored links, a visible
+  orange focus ring on the page and the black bars, a "Skip to content"
+  link, `color-scheme`, and a header and footer that line up with the page
+  content.
+- Added header navigation that wraps on phones and marks the current
+  section by underline as well as color, a services section on the home
+  page, and a friendly 404 page.
+- Added SQLite with versioned migrations, each adding its tables and seed
+  data: five agents, six ailments, six therapies, and two reported
+  ailments.
+- Added `/agents`, `/agents/:id`, `/ailments`, and `/therapies`, with cards
+  that stack on phones and form a grid on wider screens.
+- Added reporting an ailment from an agent's page, and recommended
+  therapies for the agent's ailments.
+- Added booking an appointment with a date-and-time picker, a confirmation
+  page, and `/appointments`, which lists upcoming appointments with a
+  Cancel button for each.
+- Made forms accessible: an error summary that links to each field, inline
+  errors, kept values, an `Error:` page title, and a status message after
+  each successful report or cancellation.
+- Added an end-to-end test of the care loop, and checks that run on every
+  page for the layout, the nav, unique titles, and no client-side
+  JavaScript.
+- Updated the roadmap and tech stack for the MVP: new color tokens,
+  scripts, migrations, and time handling.

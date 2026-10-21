@@ -16,40 +16,56 @@ Spec: `specs/2026-10-22-hello-clinic/`
 - Add `dev`, `build`, `start`, `test`, `test:watch`, and `validate` scripts.
 - Vitest tests cover the routes, layout components, and project setup.
 
-## Phase 2: Navigation, agents, and ailments
+## MVP: Phases 2–7 (complete)
 
-- Navigation in the header for the clinic's sections, which wraps or
-  collapses to fit phone widths.
+Spec: `specs/2026-10-22-mvp/`
+
+The MVP is the full care loop: find an agent, report an ailment, see the
+recommended therapies, and book, view, or cancel an appointment. It started
+with two groundwork steps:
+
+- **0a. Test tooling:** test files are type-checked, and the style tests
+  strip CSS comments before reading colors.
+- **0b. Accessibility base:** link and focus styles, a skip link,
+  `color-scheme`, and the header lined up with the page content.
+
+## Phase 2a: Navigation, home page, and 404 (complete)
+
+- Navigation in the header for the clinic's sections, which wraps to fit
+  phone widths. Each section's link is added when the section ships.
 - Home page describes the clinic's services.
-- Set up SQLite with a schema and seed data for sample agents and common
-  ailments.
+- A friendly 404 page for unknown routes.
+
+## Phase 2b: Database, agents, and ailments (complete)
+
+- SQLite with versioned migrations, each adding its tables and seed data.
 - `/agents` lists the agents as cards that stack on phones and form a grid
   on wider screens.
-- `/agents/:id` shows one agent's profile, with a friendly 404 page for
-  unknown agents.
+- `/agents/:id` shows one agent's profile, with the 404 page for unknown
+  agents.
 - `/ailments` lists the ailments with short descriptions.
 
-## Phase 3: Report an ailment
+## Phase 3: Report an ailment (complete)
 
 - From an agent's page, record that the agent has an ailment.
 - The agent detail page shows its current ailments.
 
-## Phase 4: Therapies catalog
+## Phase 4: Therapies catalog (complete)
 
 - Seed therapies and link each to the ailments it treats.
 - `/therapies` lists them.
 
-## Phase 5: Recommended therapies
+## Phase 5: Recommended therapies (complete)
 
 - An agent's page shows therapies recommended for its ailments.
 
-## Phase 6: Book an appointment
+## Phase 6: Book an appointment (complete)
 
 - A form to book an appointment for an agent, with validation, laid out in
   one column on phones with touch-sized controls.
 - Confirmation page after booking.
 
-## Phase 7: Appointment list
+## Phase 7: Appointment list (complete)
 
 - `/appointments` shows upcoming appointments, readable on phones without
   horizontal scrolling.
@@ -68,5 +84,6 @@ Spec: `specs/2026-10-22-hello-clinic/`
 
 - Responsive review across every page at phone, tablet, and desktop widths,
   fixing anything earlier phases missed.
-- Accessibility pass: labels, contrast, keyboard navigation.
+- Accessibility pass on the Phase 8–9 pages: labels, contrast, keyboard
+  navigation. The MVP pages were covered when they shipped.
 - Empty states and error messages reviewed across pages.
