@@ -4,6 +4,8 @@ export type Section = "home" | "agents" | "ailments" | "therapies" | "appointmen
 // links to a page that doesn't exist yet.
 const sections: { key: Section; label: string; href: string }[] = [
   { key: "home", label: "Home", href: "/" },
+  { key: "agents", label: "Agents", href: "/agents" },
+  { key: "ailments", label: "Ailments", href: "/ailments" },
 ];
 
 type NavProps = {

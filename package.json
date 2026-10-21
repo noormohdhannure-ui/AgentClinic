@@ -12,6 +12,7 @@
     "validate": "tsc --noEmit && npm run build && npm test"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^26.6.5",
     "tsx": "^4.23.15",
     "typescript": "^5.5.3",
@@ -21,6 +22,9 @@
   "type": "module",
   "dependencies": {
     "@hono/node-server": "^2.1.5",
-    "hono": "^4.13.13"
+    "@hono/zod-validator": "^0.9.1",
+    "better-sqlite3": "^13.0.3",
+    "hono": "^4.13.13",
+    "zod": "^4.6.7"
   }
 }

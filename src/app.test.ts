@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { app } from "./app.js";
+import { createTestApp } from "./test/helpers.js";
+
+const { app } = createTestApp();
 
 describe("GET /", () => {
   it("returns the AgentClinic home page", async () => {
@@ -31,6 +33,7 @@ describe("GET /", () => {
 
     expect(body).toMatch(/<header[\s\S]*<nav aria-label="Main">[\s\S]*<\/nav>[\s\S]*<\/header>/);
     expect(body).toContain('<a href="/" aria-current="page">Home</a>');
+    expect(body).toContain('<h3><a href="/ailments">Ailments</a></h3>');
     expect(body).not.toContain("<script");
   });
 

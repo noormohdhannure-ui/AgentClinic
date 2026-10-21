@@ -204,6 +204,17 @@ describe("accessibility base", () => {
     expect(rule(".nav-list a")).toContain("min-height: var(--touch-target)");
   });
 
+  it("stacks cards on phones and forms a grid from tablet width", () => {
+    const [base, ...rest] = rules(".card-grid");
+
+    expect(base).toContain("grid-template-columns: 1fr");
+    expect(rest.join("")).toContain("repeat(auto-fill, minmax(16rem, 1fr))");
+    expect(css).toMatch(
+      /@media \(min-width: 40rem\) \{\s*\.card-grid \{[^}]*repeat\(auto-fill/,
+    );
+    expect(rule(".card")).toContain("border: 1px solid var(--color-border)");
+  });
+
   it("keeps the skip link out of the body grid", () => {
     expect(rule(".skip-link")).toContain("position: absolute");
     expect(rule(".skip-link")).toContain("min-height: var(--touch-target)");
@@ -219,6 +230,11 @@ const barTokens = tokens(rule(".site-header"));
 // whether it sits on the page or on the black bars.
 const contrastPairs: [string, string, number, "page" | "bar"][] = [
   ["--color-text", "--color-bg", 4.5, "page"],
+  ["--color-text", "--color-surface", 4.5, "page"],
+  ["--color-muted", "--color-bg", 4.5, "page"],
+  ["--color-muted", "--color-surface", 4.5, "page"],
+  ["--color-accent", "--color-surface", 4.5, "page"],
+  ["--color-focus", "--color-surface", 3, "page"],
   // Links and visited links share the accent color.
   ["--color-accent", "--color-bg", 4.5, "page"],
   ["--color-focus", "--color-bg", 3, "page"],

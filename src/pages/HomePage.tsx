@@ -10,7 +10,9 @@ export function HomePage() {
         <h2>Our services</h2>
         <ul class="service-list">
           <li>
-            <h3>Ailments</h3>
+            <h3>
+              <a href="/ailments">Ailments</a>
+            </h3>
             <p>See the conditions agents bring to the clinic.</p>
           </li>
           <li>

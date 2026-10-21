@@ -17,7 +17,11 @@
   --color-bar-text: #a3a3a3;
 
   --color-bg: #fafafa;
+  --color-surface: #ffffff;
   --color-text: var(--color-brand-black);
+  --color-muted: #525252;
+  /* Card borders are decorative; card content carries its own contrast. */
+  --color-border: #d4d4d4;
   /* Bright orange is too light for text on a light background; this darker
      orange keeps text contrast above 4.5:1. */
   --color-accent: #c2410c;
@@ -48,7 +52,10 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --color-bg: var(--color-brand-black);
+    --color-surface: #171717;
     --color-text: #f5f5f5;
+    --color-muted: #a3a3a3;
+    --color-border: #404040;
     --color-accent: #fb923c;
     --color-focus: var(--color-brand-orange);
   }
@@ -217,6 +224,58 @@ h2 {
 h3 {
   margin: 0;
   font-size: 1.125rem;
+}
+
+.muted {
+  color: var(--color-muted);
+}
+
+/* Cards stack in one column on phones and form a grid from tablet width. */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40rem) {
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  }
+}
+
+/* Cards always have a border: in dark mode the surface is close to the
+   page color. */
+.card {
+  padding: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.card h2 a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
+}
+
+.card p {
+  margin: 0.25rem 0 0;
+}
+
+.details dt {
+  font-weight: 700;
+}
+
+.details dd {
+  margin: 0 0 0.75rem;
 }
 
 .service-list {

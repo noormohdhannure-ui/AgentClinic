@@ -1,11 +1,13 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
+import * as AgentCardModule from "./AgentCard.js";
 import * as FooterModule from "./Footer.js";
 import * as HeaderModule from "./Header.js";
 import * as LayoutModule from "./Layout.js";
 import * as MainModule from "./Main.js";
 import * as NavModule from "./Nav.js";
 
+const { AgentCard } = AgentCardModule;
 const { Footer } = FooterModule;
 const { Header } = HeaderModule;
 const { Layout } = LayoutModule;
@@ -47,6 +49,18 @@ describe("Nav", () => {
     expect(String(<Nav current="home" currentIsPage={false} />)).toContain(
       '<a href="/" aria-current="true">Home</a>',
     );
+  });
+});
+
+describe("AgentCard", () => {
+  it("renders a card linking to the agent's page", () => {
+    const agent = { id: 3, name: "Ledger", role: "Spreadsheet analyst", human: "A finance team", bio: "" };
+    const html = String(<AgentCard agent={agent} />);
+
+    expect(html).toMatch(/^<li class="card">/);
+    expect(html).toContain('<h2><a href="/agents/3">Ledger</a></h2>');
+    expect(html).toContain('<p class="muted">Spreadsheet analyst</p>');
+    expect(html).toContain("Works for: A finance team");
   });
 });
 
@@ -109,6 +123,7 @@ describe("component files", () => {
     ["Footer", FooterModule],
     ["Layout", LayoutModule],
     ["Nav", NavModule],
+    ["AgentCard", AgentCardModule],
   ])("%s.tsx exports only its component", (name, module) => {
     expect(Object.keys(module)).toEqual([name]);
   });
