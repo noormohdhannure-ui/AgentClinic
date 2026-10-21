@@ -18,6 +18,9 @@ export function Layout({ title, children }: LayoutProps) {
         <link rel="stylesheet" href="/styles.css" />
       </head>
       <body>
+        <a class="skip-link" href="#main">
+          Skip to content
+        </a>
         <Header />
         <Main>{children}</Main>
         <Footer />

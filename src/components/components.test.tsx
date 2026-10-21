@@ -27,7 +27,7 @@ describe("Main", () => {
       </Main>,
     );
 
-    expect(html).toBe('<main class="site-main"><p>Hello</p></main>');
+    expect(html).toBe('<main id="main" class="site-main"><p>Hello</p></main>');
   });
 });
 
@@ -57,8 +57,17 @@ describe("Layout", () => {
     const html = String(<Layout title="Test page">content</Layout>);
 
     expect(html).toMatch(
-      /<body><header[\s\S]*<\/header><main[^>]*>content<\/main><footer[\s\S]*<\/footer><\/body>/,
+      /<body><a[^>]*>[^<]*<\/a><header[\s\S]*<\/header><main[^>]*>content<\/main><footer[\s\S]*<\/footer><\/body>/,
     );
+  });
+
+  it("starts the body with a skip link to the main content", () => {
+    const html = String(<Layout title="Test page">content</Layout>);
+
+    expect(html).toContain(
+      '<body><a class="skip-link" href="#main">Skip to content</a><header',
+    );
+    expect(html).toContain('<main id="main" class="site-main">');
   });
 });
 

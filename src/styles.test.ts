@@ -161,21 +161,77 @@ describe("brand colors", () => {
   });
 });
 
-// Each pair is a foreground color, the background it is used on, and the
-// minimum contrast: 4.5:1 for text, 3:1 for non-text such as focus rings.
-const contrastPairs: [string, string, number][] = [
-  ["--color-text", "--color-bg", 4.5],
-  ["--color-brand-orange", "--color-bar-bg", 4.5],
-  ["--color-bar-text", "--color-bar-bg", 4.5],
+describe("accessibility base", () => {
+  it("declares both color schemes", () => {
+    expect(rule(":root")).toContain("color-scheme: light dark");
+  });
+
+  it("underlines links in the accent color, visited or not", () => {
+    expect(rule("a:visited")).toBe(rule("a"));
+    expect(rule("a")).toContain("color: var(--color-accent)");
+    expect(rule("a")).toContain("text-decoration: underline");
+  });
+
+  it("gives header and footer links bar colors, visited or not", () => {
+    for (const selector of [
+      ".site-header a:not(.brand)",
+      ".site-header a:not(.brand):visited",
+      ".site-footer a",
+      ".site-footer a:visited",
+    ]) {
+      expect(rule(selector), selector).toContain("color: var(--color-bar-text)");
+    }
+    expect(rule(".brand:visited")).toContain("color: var(--color-brand-orange)");
+  });
+
+  it("draws a visible focus ring", () => {
+    expect(rule(":focus-visible")).toContain("outline: 3px solid var(--color-focus)");
+    expect(rule(":focus-visible")).toContain("outline-offset: 2px");
+    expect(rule(".site-header")).toContain("--color-focus: var(--color-brand-orange)");
+  });
+
+  it("lines the header and footer up with the main content", () => {
+    expect(rule(".site-footer")).toContain(
+      "max(var(--gutter), (100% - var(--content-width)) / 2 + var(--gutter))",
+    );
+  });
+
+  it("keeps the skip link out of the body grid", () => {
+    expect(rule(".skip-link")).toContain("position: absolute");
+    expect(rule(".skip-link")).toContain("min-height: var(--touch-target)");
+    expect(rule(".skip-link:focus")).toContain("transform: none");
+  });
+});
+
+// Tokens set on the header and footer bars override the page's.
+const barTokens = tokens(rule(".site-header"));
+
+// Each pair is a foreground color, the background it is used on, the minimum
+// contrast (4.5:1 for text, 3:1 for non-text such as focus rings), and
+// whether it sits on the page or on the black bars.
+const contrastPairs: [string, string, number, "page" | "bar"][] = [
+  ["--color-text", "--color-bg", 4.5, "page"],
+  // Links and visited links share the accent color.
+  ["--color-accent", "--color-bg", 4.5, "page"],
+  ["--color-focus", "--color-bg", 3, "page"],
+  ["--color-brand-orange", "--color-bar-bg", 4.5, "bar"],
+  ["--color-bar-text", "--color-bar-bg", 4.5, "bar"],
+  ["--color-focus", "--color-bar-bg", 3, "bar"],
+  // The skip link: bright orange text on a black background.
+  ["--color-brand-orange", "--color-bar-bg", 4.5, "page"],
 ];
 
 describe.each([
   ["light", lightTokens],
   ["dark", darkTokens],
 ])("contrast in the %s scheme", (_, scheme) => {
-  it.each(contrastPairs)("%s on %s is at least %s:1", (foreground, background, minimum) => {
-    const ratio = contrast(color(scheme, foreground), color(scheme, background));
+  it.each(contrastPairs)(
+    "%s on %s is at least %s:1 (%s)",
+    (foreground, background, minimum, where) => {
+      const tokens = where === "bar" ? { ...scheme, ...barTokens } : scheme;
+      const ratio = contrast(color(tokens, foreground), color(tokens, background));
 
-    expect(ratio).toBeGreaterThanOrEqual(minimum);
-  });
+      expect(ratio).toBeGreaterThanOrEqual(minimum);
+    },
+  );
 });

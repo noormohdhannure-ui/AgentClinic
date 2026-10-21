@@ -21,15 +21,18 @@ describe("GET /", () => {
     const body = await (await app.request("/")).text();
 
     expect(body).toMatch(/<header class="site-header">[\s\S]*AgentClinic[\s\S]*<\/header>/);
-    expect(body).toMatch(/<main class="site-main">[\s\S]*<h1>AgentClinic<\/h1>[\s\S]*<\/main>/);
+    expect(body).toMatch(/<main id="main" class="site-main">[\s\S]*<h1>AgentClinic<\/h1>[\s\S]*<\/main>/);
     expect(body).toMatch(/<footer class="site-footer">[\s\S]*AgentClinic[\s\S]*<\/footer>/);
     expect(body).toContain('<link rel="stylesheet" href="/styles.css"/>');
   });
 
-  it("has only the brand link and no client-side JavaScript", async () => {
+  it("has only the skip and brand links and no client-side JavaScript", async () => {
     const body = await (await app.request("/")).text();
 
-    expect(body.match(/<a\b[^>]*>/g)).toEqual(['<a class="brand" href="/">']);
+    expect(body.match(/<a\b[^>]*>/g)).toEqual([
+      '<a class="skip-link" href="#main">',
+      '<a class="brand" href="/">',
+    ]);
     expect(body).not.toContain("<script");
     expect(body).not.toContain("<nav");
   });
