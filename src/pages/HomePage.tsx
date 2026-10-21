@@ -22,7 +22,9 @@ export function HomePage() {
             <p>Browse the treatments we offer for each ailment.</p>
           </li>
           <li>
-            <h3>Appointments</h3>
+            <h3>
+              <a href="/appointments">Appointments</a>
+            </h3>
             <p>Book time with the clinic and manage your visits.</p>
           </li>
         </ul>

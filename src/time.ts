@@ -26,7 +26,10 @@ export function formatWhen(value: string): string {
 export function isRealDateTime(value: string): boolean {
   const match = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/);
   if (!match) return false;
-  const [year, month, day, hours, minutes, seconds = 0] = match.slice(1).map(Number);
+  // A missing seconds group is undefined, which Number() would turn into NaN.
+  const [year, month, day, hours, minutes, seconds] = match
+    .slice(1)
+    .map((part) => Number(part ?? 0));
   const daysInMonth = new Date(year, month, 0).getDate();
   return (
     month >= 1 &&

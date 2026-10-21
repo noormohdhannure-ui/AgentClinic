@@ -43,6 +43,11 @@ export function AgentPage({
         <dt>About</dt>
         <dd>{agent.bio}</dd>
       </dl>
+      <p>
+        <a class="button" href={`/agents/${agent.id}/appointments/new`}>
+          Book an appointment
+        </a>
+      </p>
 
       <section aria-labelledby="ailments-heading">
         <h2 id="ailments-heading">Ailments</h2>

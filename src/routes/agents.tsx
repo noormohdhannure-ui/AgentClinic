@@ -7,6 +7,7 @@ import type { Db } from "../db/index.js";
 import { recommendedTherapies } from "../db/therapies.js";
 import { AgentPage } from "../pages/AgentPage.js";
 import { AgentsPage } from "../pages/AgentsPage.js";
+import { bookingRoutes } from "./appointments.js";
 import {
   type FieldErrors,
   type FormValues,
@@ -61,6 +62,8 @@ export function agentRoutes(db: Db, now: () => string) {
   agents.get(`/:id${ID}`, (c) =>
     renderAgentPage(c, c.get("agent"), { reported: c.req.query("reported") === "1" }),
   );
+
+  agents.route(`/:id${ID}/appointments`, bookingRoutes(db, now));
 
   agents.post(
     `/:id${ID}/ailments`,

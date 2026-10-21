@@ -23,7 +23,7 @@ describe("openDb", () => {
 
     expect(db.pragma("user_version", { simple: true })).toBe(migrations.length);
     expect(tableNames(db)).toEqual(
-      expect.arrayContaining(["agents", "ailments", "agent_ailments", "therapies", "therapy_ailments"]),
+      expect.arrayContaining(["agents", "ailments", "agent_ailments", "therapies", "therapy_ailments", "appointments"]),
     );
   });
 
@@ -59,6 +59,7 @@ describe("seed data", () => {
   it("has two reported ailments and six therapies", () => {
     expect(count(db, "agent_ailments")).toBe(2);
     expect(count(db, "therapies")).toBe(6);
+    expect(count(db, "appointments")).toBe(0);
   });
 
   it("treats every ailment with at least one therapy", () => {
@@ -69,6 +70,16 @@ describe("seed data", () => {
       .all();
 
     expect(untreated).toEqual([]);
+  });
+
+  it("only accepts booked or cancelled appointments", () => {
+    expect(() =>
+      db
+        .prepare(
+          "INSERT INTO appointments (agent_id, scheduled_at, status, created_at) VALUES (1, '2026-11-03T10:00', 'lost', '2026-11-01T09:00')",
+        )
+        .run(),
+    ).toThrow(/CHECK/);
   });
 
   it("enforces foreign keys", () => {

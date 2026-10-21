@@ -7,6 +7,7 @@ const sections: { key: Section; label: string; href: string }[] = [
   { key: "agents", label: "Agents", href: "/agents" },
   { key: "ailments", label: "Ailments", href: "/ailments" },
   { key: "therapies", label: "Therapies", href: "/therapies" },
+  { key: "appointments", label: "Appointments", href: "/appointments" },
 ];
 
 type NavProps = {

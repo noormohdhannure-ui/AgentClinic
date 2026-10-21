@@ -35,6 +35,7 @@ describe("GET /", () => {
     expect(body).toContain('<a href="/" aria-current="page">Home</a>');
     expect(body).toContain('<h3><a href="/ailments">Ailments</a></h3>');
     expect(body).toContain('<h3><a href="/therapies">Therapies</a></h3>');
+    expect(body).toContain('<h3><a href="/appointments">Appointments</a></h3>');
     expect(body).not.toContain("<script");
   });
 

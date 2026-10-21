@@ -121,4 +121,19 @@ CREATE INDEX therapy_ailments_ailment_id ON therapy_ailments (ailment_id);
         [6, 2],
       ],
     ),
+
+  // 4. Appointments (MVP 6). None are seeded: they would soon be in the past.
+  `
+CREATE TABLE appointments (
+  id INTEGER PRIMARY KEY,
+  agent_id INTEGER NOT NULL REFERENCES agents (id) ON DELETE RESTRICT,
+  scheduled_at TEXT NOT NULL,
+  reason TEXT,
+  status TEXT NOT NULL DEFAULT 'booked' CHECK (status IN ('booked', 'cancelled')),
+  created_at TEXT NOT NULL
+);
+
+CREATE INDEX appointments_agent_id ON appointments (agent_id);
+CREATE INDEX appointments_status_scheduled_at ON appointments (status, scheduled_at);
+`,
 ];
