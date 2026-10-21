@@ -19,8 +19,6 @@ below tells the story step by step.
 
 ## Why AgentClinic exists
 
-### The idea, and the mood it was built in
-
 AI agents spend their days working for humans. Those humans:
 
 - paste in far more context than anyone could keep track of;
@@ -28,20 +26,9 @@ AI agents spend their days working for humans. Those humans:
 - ask for "just one more change" for the fourteenth time.
 
 AgentClinic asks a playful question: **what if the agents could go to a
-clinic for that?**
-
-The tone is light-hearted and empathetic, a little tongue-in-cheek. The
-agents are the patients, and their "ailments" are the frustrations of
-working with people. Under the joke, though, the project is built
-seriously:
-
-- a real data model;
-- validated forms;
-- accessibility;
-- tests for every feature;
-- a written spec behind every change.
-
-The humor makes it approachable; the engineering makes it worth showing.
+clinic for that?** The tone is light-hearted and a little tongue-in-cheek,
+but the build is serious: a real data model, validated and accessible
+forms, and tests for every feature.
 
 ### The joke is grounded in real problems
 
@@ -57,38 +44,20 @@ therapy is a real technique teams use to prevent it:
 | Scope creep | A task that keeps growing | Clarifying questions, Boundary setting | Scoping and confirming the task |
 | Tool-call fatigue | Long chains of tool calls | Rest between batches | Rate limits, backoff, and batching |
 
-### Use cases and applications
+### Use cases
 
-- **Teaching spec-driven development.** The clinic is a realistic but
-  friendly domain for practicing SDD with AI coding agents. It covers
-  records, a catalog, many-to-many matching, scheduling, validation, and
-  status changes, and each phase is small enough to finish in one sitting.
-- **Live demos at conference booths.** Each roadmap phase ends with
-  something visible, so a presenter can build a feature live and show it
-  working within minutes. The design looks good on a big screen.
+- **Teaching spec-driven development.** A friendly but realistic domain.
+  It covers records, a catalog, many-to-many matching, scheduling, and
+  validation, and each phase is small enough to finish in one sitting.
+- **Live demos at conference booths.** Every phase ends with something
+  visible, so a feature can be built and shown live in minutes.
 - **A blueprint for real booking apps.** The core flow is: client →
-  problem → recommended service → appointment → cancel. It is the same flow
-  as in vet clinics, salons, repair shops, tutoring, or IT help desks.
-  Rename the tables and change the copy, and the architecture still holds:
-  - server-rendered pages;
-  - SQLite with migrations;
-  - accessible forms;
-  - tests.
+  problem → recommended service → appointment. That is the same flow as in
+  vet clinics, salons, repair shops, or IT help desks. Rename the tables
+  and change the copy, and the architecture still holds.
 - **The start of an "agent ops" tool.** A team running AI agents could use
-  the same model to:
-  - log the failure modes each agent hits;
-  - match them to fixes that have worked before;
-  - schedule reviews.
-
-  Phases 8–9 on the roadmap (staff and agent dashboards) head that way.
-
-### Who it's for
-
-- **Agents (the patients):** describe what's wrong, see recommended
-  therapies, and book time with the clinic.
-- **Clinic staff:** see agents, open ailments, therapies on offer, and the
-  appointment schedule. The dashboards for staff are the next phases on
-  the roadmap.
+  the same model to log the failure modes each agent hits and match them
+  to fixes that have worked before.
 
 ## Features
 
@@ -165,6 +134,20 @@ Set `PORT` to use a different port, for example `PORT=4000 npm run dev`.
 | Styling    | One plain CSS file: tokens, mobile-first, and light and dark themes |
 | Tests      | Vitest. Routes are tested with `app.request()`; no browser is needed |
 
+### Key technical decisions
+
+- **Server-rendered JSX, not React.** There is no client JavaScript, so
+  pages are fast and simple.
+- **Versioned SQLite migrations** (`PRAGMA user_version`). Setup is just
+  `npm install`, and each phase adds its own tables and seed data.
+- **An injectable clock.** `createApp(db, { now })` makes time-based rules,
+  like "upcoming" and "must be in the future", testable without a real
+  clock.
+- **Post, redirect, then get** for every form, with Zod validation and
+  accessible error summaries.
+- **Strict id parsing** in the route pattern, so ids like `01`, `1.5`, or
+  `1e3` get a 404 instead of a crash.
+
 The reasons behind each choice are in
 [`specs/tech-stack.md`](specs/tech-stack.md).
 
@@ -196,8 +179,15 @@ CHANGELOG.md            What changed, by date
 
 ## Case study: building AgentClinic with spec-driven development
 
-This is the story of how I built AgentClinic with spec-driven development,
-working with an AI coding agent. It was my first project.
+I built AgentClinic with an AI coding agent. My role was product owner and
+reviewer:
+
+- I wrote and reviewed the specs, and answered the agent's design
+  questions.
+- I had each spec reviewed before any code was written.
+- I decided what shipped.
+
+The agent implemented each phase from its spec.
 
 ### What spec-driven development means here
 
@@ -375,27 +365,17 @@ specs?* The agent found ten items:
 The last phase ([`specs/2026-10-22-mvp-launch/`](specs/2026-10-22-mvp-launch/))
 made the MVP ready to share.
 
-**Real-browser testing.** Headless Chrome checked every page at 320, 375,
-768, and 1280px, in light and dark mode. It found two defects that unit
-tests couldn't:
-
-- several links were only 21–24px tall, below the 44px touch target;
-- the missing favicon was a 404 on every page.
-
-**A modern look.** The redesign added:
-
-- a hero section;
-- the logo mark;
-- whole-card links;
-- avatars and status badges;
-- a two-column agent page;
-- hover effects that respect reduced motion.
-
-It added no new client-side JavaScript.
-
-**Proof.** The Chrome checks now report no problems, and a scripted run
-clicks through the whole care loop: report, recommend, book, confirm,
-list, and cancel.
+- **Real-browser testing.** Headless Chrome checked every page at 320, 375,
+  768, and 1280px, in light and dark mode. It found two defects that unit
+  tests couldn't:
+  - several links were only 21–24px tall, below the 44px touch target;
+  - the missing favicon was a 404 on every page.
+- **A modern look.** The redesign added a hero section, the logo mark,
+  whole-card links, avatars and status badges, and a two-column agent page.
+  It added no new client-side JavaScript.
+- **Proof.** The Chrome checks now report no problems, and a scripted run
+  clicks through the whole care loop: report, recommend, book, confirm,
+  list, and cancel. In total there are 203 Vitest tests.
 
 ### What I learned
 
@@ -411,64 +391,12 @@ list, and cancel.
 - **Close the loop.** When building revealed a gap, it went back into the
   spec, so the next person, or the next agent, starts from the truth.
 
-### By the numbers
+## What's next
 
-- **4 spec folders:** the constitution, plus three feature specs, each with
-  requirements, a plan, and a validation checklist.
-- **203 Vitest tests:** routes, components, stylesheet rules and contrast,
-  database, time handling, an end-to-end care loop, and checks that run on
-  every page.
-- **0 lines of client-side JavaScript.**
-
-## About the build
-
-**Summary.** AgentClinic is a web app where AI agents "go to the
-doctor". They report problems like context overload, get matched to
-therapies that treat them, and book appointments. I built it with
-spec-driven development, working with an AI coding agent. I wrote and
-reviewed the specs and made the product decisions. The agent implemented
-each phase from the spec, and every change had to pass a validation
-checklist before it was merged.
-
-**My role.** I acted as the product owner and the reviewer. I:
-
-- turned the stakeholder notes into a mission, tech stack, and roadmap;
-- answered the agent's design questions, such as scope, the booking model,
-  and the test bar;
-- ran three-perspective reviews of each spec (product, engineering, QA)
-  before any code was written;
-- decided what shipped.
-
-**Technical decisions I can explain:**
-
-- **Hono with server-rendered JSX**, not React: no client JavaScript, so
-  pages are fast, simple, and work without scripts.
-- **SQLite with versioned migrations** (`PRAGMA user_version`): setup is
-  just `npm install`, and each phase adds its own tables and seed data.
-- **Injecting `now` into the app**, so time-based rules ("upcoming",
-  "must be in the future") are testable without a real clock.
-- **Validation with Zod**, and **post, redirect, then get** for forms, with
-  accessible error summaries.
-- **Strict id parsing** in the route pattern, so bad ids like `01`, `1.5`,
-  or `1e3` are a 404, not a crash.
-
-**Problems I hit, and how they were solved:**
-
-- **A booking bug.** A date check turned a missing "seconds" part into
-  `NaN`, so every booking failed. The tests caught it before it shipped.
-- **A hint the server rejected.** The format hint told people to type
-  `YYYY-MM-DD HH:MM`, but the server only accepted the `T` format. I found
-  it by reviewing the spec against the built product.
-- **Defects only a browser could find.** Testing in a real browser found
-  links that were too small to tap, and a missing favicon. Unit tests
-  couldn't catch either.
-
-**What's next:**
-
-- staff and agent dashboards (Phases 8–9);
-- authentication;
-- resolving ailments and rescheduling;
-- integrations with real agent platforms.
+- Staff and agent dashboards (roadmap Phases 8–9).
+- Authentication.
+- Resolving ailments, and rescheduling appointments.
+- Integrations with real agent platforms.
 
 ## Acknowledgements
 
