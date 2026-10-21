@@ -105,3 +105,10 @@ All notable changes to AgentClinic, newest first.
   spec-driven development.
 - Cleaned up the repository: moved the constitution prompt log to `docs/`,
   and stopped tracking editor settings (`.idea/`).
+- Explained why AgentClinic exists, in the README and the mission:
+  - the playful idea and its tone;
+  - how each ailment and therapy maps to a real AI-agent failure mode and
+    its fix;
+  - the use cases: teaching SDD, booth demos, a blueprint for booking apps,
+    and agent ops;
+  - a summary for talking about the project in an interview.

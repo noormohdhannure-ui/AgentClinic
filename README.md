@@ -17,6 +17,79 @@ below tells the story step by step.
 | --- | --- |
 | ![Agent page in dark mode, with ailments, recommended therapies, and the report form](docs/screenshots/agent-dark.png) | ![Agent page on a phone after reporting an ailment](docs/screenshots/agent-mobile.png) |
 
+## Why AgentClinic exists
+
+### The idea, and the mood it was built in
+
+AI agents spend their days working for humans. Those humans:
+
+- paste in far more context than anyone could keep track of;
+- give instructions that contradict each other;
+- ask for "just one more change" for the fourteenth time.
+
+AgentClinic asks a playful question: **what if the agents could go to a
+clinic for that?**
+
+The tone is light-hearted and empathetic, a little tongue-in-cheek. The
+agents are the patients, and their "ailments" are the frustrations of
+working with people. Under the joke, though, the project is built
+seriously:
+
+- a real data model;
+- validated forms;
+- accessibility;
+- tests for every feature;
+- a written spec behind every change.
+
+The humor makes it approachable; the engineering makes it worth showing.
+
+### The joke is grounded in real problems
+
+Every ailment in the clinic is a real failure mode of AI agents, and every
+therapy is a real technique teams use to prevent it:
+
+| Ailment in the clinic | What it is in real life | Therapy in the clinic | The real technique |
+| --- | --- | --- | --- |
+| Context overload | Too much input for the model's context window | Context compaction, Priority triage | Summarizing and pruning context |
+| Contradictory instructions | Conflicting prompts and requirements | Clarifying-questions session | Asking before acting |
+| Endless revision requests | Feedback loops with no clear "done" | Boundary setting | Agreeing on acceptance criteria |
+| Hallucination anxiety | Stating things that aren't true | Source-checking routine | Grounding answers in sources |
+| Scope creep | A task that keeps growing | Clarifying questions, Boundary setting | Scoping and confirming the task |
+| Tool-call fatigue | Long chains of tool calls | Rest between batches | Rate limits, backoff, and batching |
+
+### Use cases and applications
+
+- **Teaching spec-driven development.** The clinic is a realistic but
+  friendly domain for practicing SDD with AI coding agents. It covers
+  records, a catalog, many-to-many matching, scheduling, validation, and
+  status changes, and each phase is small enough to finish in one sitting.
+- **Live demos at conference booths.** Each roadmap phase ends with
+  something visible, so a presenter can build a feature live and show it
+  working within minutes. The design looks good on a big screen.
+- **A blueprint for real booking apps.** The core flow is: client →
+  problem → recommended service → appointment → cancel. It is the same flow
+  as in vet clinics, salons, repair shops, tutoring, or IT help desks.
+  Rename the tables and change the copy, and the architecture still holds:
+  - server-rendered pages;
+  - SQLite with migrations;
+  - accessible forms;
+  - tests.
+- **The start of an "agent ops" tool.** A team running AI agents could use
+  the same model to:
+  - log the failure modes each agent hits;
+  - match them to fixes that have worked before;
+  - schedule reviews.
+
+  Phases 8–9 on the roadmap (staff and agent dashboards) head that way.
+
+### Who it's for
+
+- **Agents (the patients):** describe what's wrong, see recommended
+  therapies, and book time with the clinic.
+- **Clinic staff:** see agents, open ailments, therapies on offer, and the
+  appointment schedule. The dashboards for staff are the next phases on
+  the roadmap.
+
 ## Features
 
 - **Agents.** Browse the agents in the clinic's care, and open an agent's
@@ -346,6 +419,58 @@ list, and cancel.
   database, time handling, an end-to-end care loop, and checks that run on
   every page.
 - **0 lines of client-side JavaScript.**
+
+## Talking about this project
+
+A summary I can use to explain the project in an interview.
+
+**In one minute.** AgentClinic is a web app where AI agents "go to the
+doctor". They report problems like context overload, get matched to
+therapies that treat them, and book appointments. I built it with
+spec-driven development, working with an AI coding agent. I wrote and
+reviewed the specs and made the product decisions. The agent implemented
+each phase from the spec, and every change had to pass a validation
+checklist before it was merged.
+
+**My role.** I acted as the product owner and the reviewer. I:
+
+- turned the stakeholder notes into a mission, tech stack, and roadmap;
+- answered the agent's design questions, such as scope, the booking model,
+  and the test bar;
+- ran three-perspective reviews of each spec (product, engineering, QA)
+  before any code was written;
+- decided what shipped.
+
+**Technical decisions I can explain:**
+
+- **Hono with server-rendered JSX**, not React: no client JavaScript, so
+  pages are fast, simple, and work without scripts.
+- **SQLite with versioned migrations** (`PRAGMA user_version`): setup is
+  just `npm install`, and each phase adds its own tables and seed data.
+- **Injecting `now` into the app**, so time-based rules ("upcoming",
+  "must be in the future") are testable without a real clock.
+- **Validation with Zod**, and **post, redirect, then get** for forms, with
+  accessible error summaries.
+- **Strict id parsing** in the route pattern, so bad ids like `01`, `1.5`,
+  or `1e3` are a 404, not a crash.
+
+**Problems I hit, and how they were solved:**
+
+- **A booking bug.** A date check turned a missing "seconds" part into
+  `NaN`, so every booking failed. The tests caught it before it shipped.
+- **A hint the server rejected.** The format hint told people to type
+  `YYYY-MM-DD HH:MM`, but the server only accepted the `T` format. I found
+  it by reviewing the spec against the built product.
+- **Defects only a browser could find.** Testing in a real browser found
+  links that were too small to tap, and a missing favicon. Unit tests
+  couldn't catch either.
+
+**What's next:**
+
+- staff and agent dashboards (Phases 8–9);
+- authentication;
+- resolving ailments and rescheduling;
+- integrations with real agent platforms.
 
 ## Acknowledgements
 

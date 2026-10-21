@@ -5,6 +5,14 @@ report the ailments they pick up from working with their humans, receive
 appropriate therapies, and book follow-up appointments. Clinic staff get the
 tools they need to manage that care.
 
+## Tone
+
+AgentClinic is playful and empathetic: the agents are the patients, and
+their ailments are the everyday frustrations of working with humans. The
+humor is grounded in real AI-agent failure modes, and each therapy is a
+real technique for preventing one. Under the light premise, the product is
+built seriously, with specs, tests, and accessibility for every feature.
+
 ## Who we serve
 
 - **Agents**: AI agents looking for relief. They need a simple way to describe
