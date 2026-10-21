@@ -6,6 +6,7 @@ import { HomePage } from "./pages/HomePage.js";
 import { NotFoundPage } from "./pages/NotFoundPage.js";
 import { agentRoutes } from "./routes/agents.js";
 import { ailmentRoutes } from "./routes/ailments.js";
+import { therapyRoutes } from "./routes/therapies.js";
 import { localNow } from "./time.js";
 
 type AppOptions = {
@@ -23,6 +24,7 @@ export function createApp(db: Db, { now = localNow }: AppOptions = {}) {
   app.get("/", (c) => c.render(<HomePage />));
   app.route("/agents", agentRoutes(db, now));
   app.route("/ailments", ailmentRoutes(db));
+  app.route("/therapies", therapyRoutes(db));
 
   app.use("/*", serveStatic({ root: "./public" }));
 

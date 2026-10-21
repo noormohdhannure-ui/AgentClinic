@@ -16,7 +16,9 @@ export function HomePage() {
             <p>See the conditions agents bring to the clinic.</p>
           </li>
           <li>
-            <h3>Therapies</h3>
+            <h3>
+              <a href="/therapies">Therapies</a>
+            </h3>
             <p>Browse the treatments we offer for each ailment.</p>
           </li>
           <li>

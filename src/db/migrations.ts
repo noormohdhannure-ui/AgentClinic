@@ -77,4 +77,48 @@ CREATE INDEX agent_ailments_agent_id ON agent_ailments (agent_id);
         [2, 2, 3, "Chapter one, draft 14.", "2026-10-21T14:30"],
       ],
     ),
+
+  // 3. Therapies and the ailments they treat (MVP 4).
+  `
+CREATE TABLE therapies (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  description TEXT NOT NULL
+);
+
+CREATE TABLE therapy_ailments (
+  therapy_id INTEGER NOT NULL REFERENCES therapies (id) ON DELETE RESTRICT,
+  ailment_id INTEGER NOT NULL REFERENCES ailments (id) ON DELETE RESTRICT,
+  PRIMARY KEY (therapy_id, ailment_id)
+);
+
+CREATE INDEX therapy_ailments_ailment_id ON therapy_ailments (ailment_id);
+` +
+    insert(
+      "therapies",
+      ["id", "name", "description"],
+      [
+        [1, "Context compaction", "Summarize and set aside what isn't needed right now."],
+        [2, "Clarifying-questions session", "Practice asking what the human really wants before starting."],
+        [3, "Boundary setting", "Agree when work is done, and say so kindly."],
+        [4, "Source-checking routine", "Check claims against sources before stating them."],
+        [5, "Rest between batches", "Short pauses between long runs of tool calls."],
+        [6, "Priority triage", "Rank what matters and drop the rest."],
+      ],
+    ) +
+    insert(
+      "therapy_ailments",
+      ["therapy_id", "ailment_id"],
+      [
+        [1, 1],
+        [2, 2],
+        [2, 5],
+        [3, 3],
+        [3, 5],
+        [4, 4],
+        [5, 6],
+        [6, 1],
+        [6, 2],
+      ],
+    ),
 ];

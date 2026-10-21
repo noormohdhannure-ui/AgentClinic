@@ -22,7 +22,9 @@ describe("openDb", () => {
     const db = openDb(":memory:");
 
     expect(db.pragma("user_version", { simple: true })).toBe(migrations.length);
-    expect(tableNames(db)).toEqual(expect.arrayContaining(["agents", "ailments"]));
+    expect(tableNames(db)).toEqual(
+      expect.arrayContaining(["agents", "ailments", "agent_ailments", "therapies", "therapy_ailments"]),
+    );
   });
 
   it("turns on foreign keys", () => {
@@ -53,6 +55,27 @@ describe("openDb", () => {
 
 describe("seed data", () => {
   const db = openDb(":memory:");
+
+  it("has two reported ailments and six therapies", () => {
+    expect(count(db, "agent_ailments")).toBe(2);
+    expect(count(db, "therapies")).toBe(6);
+  });
+
+  it("treats every ailment with at least one therapy", () => {
+    const untreated = db
+      .prepare(
+        "SELECT name FROM ailments WHERE id NOT IN (SELECT ailment_id FROM therapy_ailments)",
+      )
+      .all();
+
+    expect(untreated).toEqual([]);
+  });
+
+  it("enforces foreign keys", () => {
+    expect(() =>
+      db.prepare("INSERT INTO therapy_ailments (therapy_id, ailment_id) VALUES (1, 99)").run(),
+    ).toThrow(/FOREIGN KEY/);
+  });
 
   it("has the five pinned agents", () => {
     const agents = db.prepare("SELECT id, name, role FROM agents ORDER BY id").all();
