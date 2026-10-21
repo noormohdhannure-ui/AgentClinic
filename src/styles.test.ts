@@ -55,3 +55,67 @@ describe("responsive stylesheet", () => {
     expect(rule("h1")).toMatch(/font-size: clamp\(/);
   });
 });
+
+function tokens(block: string): Record<string, string> {
+  return Object.fromEntries(
+    [...block.matchAll(/(--[\w-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2].trim()]),
+  );
+}
+
+const lightTokens = tokens(css.match(/:root\s*\{([^}]*)\}/)![1]);
+const darkTokens = {
+  ...lightTokens,
+  ...tokens(css.match(/prefers-color-scheme: dark\)\s*\{\s*:root\s*\{([^}]*)\}/)![1]),
+};
+
+function color(scheme: Record<string, string>, name: string): string {
+  const value = scheme[name];
+  const ref = value.match(/^var\((--[\w-]+)\)$/);
+  return ref ? color(scheme, ref[1]) : value;
+}
+
+function contrast(a: string, b: string): number {
+  const luminance = (hex: string) => {
+    const [r, g, bl] = hex
+      .slice(1)
+      .match(/../g)!
+      .map((h) => parseInt(h, 16) / 255)
+      .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  };
+  const [light, dark] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (light + 0.05) / (dark + 0.05);
+}
+
+describe("brand colors", () => {
+  it("defines orange and black brand tokens", () => {
+    expect(lightTokens["--color-brand-orange"]).toBe("#f97316");
+    expect(lightTokens["--color-brand-black"]).toBe("#0a0a0a");
+  });
+
+  it("uses black header and footer bars with an orange brand", () => {
+    expect(lightTokens["--color-bar-bg"]).toBe("var(--color-brand-black)");
+    expect(css).toMatch(/\.site-footer\s*\{[^}]*background: var\(--color-bar-bg\)/);
+    expect(rule(".site-header")).toContain("border-bottom-width: 4px");
+    expect(rule(".brand")).toContain("color: var(--color-brand-orange)");
+  });
+
+  it.each([
+    ["light", lightTokens],
+    ["dark", darkTokens],
+  ])("keeps text contrast at least 4.5:1 in the %s scheme", (_, scheme) => {
+    const pairs = [
+      ["--color-text", "--color-bg"],
+      ["--color-text", "--color-surface"],
+      ["--color-muted", "--color-bg"],
+      ["--color-accent", "--color-bg"],
+      ["--color-brand-orange", "--color-bar-bg"],
+      ["--color-bar-text", "--color-bar-bg"],
+    ];
+
+    for (const [text, background] of pairs) {
+      const ratio = contrast(color(scheme, text), color(scheme, background));
+      expect(ratio, `${text} on ${background}`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});

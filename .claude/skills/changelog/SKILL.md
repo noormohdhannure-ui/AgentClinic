@@ -74,7 +74,7 @@ All notable changes to AgentClinic, newest first.
 ## 2026-10-23
 
 - Added the agents list at `/agents`, showing sample agents as cards that
-  stack on phones (Phase 3, `specs/2026-10-23-agents-list/`).
+  stack on phones (Phase 2, `specs/2026-10-23-agents-list/`).
 - Fixed the footer overlapping content on short screens.
 
 ## 2026-10-22

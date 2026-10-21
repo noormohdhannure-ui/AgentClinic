@@ -40,6 +40,7 @@ tools they need to manage that care.
 3. **Attractive, modern, and responsive.** The site should look good and
    work well in current evergreen browsers on any screen size: phones,
    tablets, and desktops, including the displays at a conference booth.
+   It carries the brand colors, orange and black, on every page.
    *(Marketing)*
 4. **Small, visible steps.** We ship in tiny phases, each ending with
    something a person can see and use.

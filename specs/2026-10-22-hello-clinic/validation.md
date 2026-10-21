@@ -48,6 +48,15 @@ Each item below is covered by a Vitest test.
 - [ ] The brand link has a `--touch-target` (2.75rem) minimum height.
 - [ ] The heading scales with `clamp()`.
 
+### Brand colors (`src/styles.test.ts`)
+
+- [ ] The brand tokens are orange `#f97316` and black `#0a0a0a`.
+- [ ] The header and footer use the black bar color, the header has a 4px
+      orange bottom border, and the brand link is orange.
+- [ ] Text, muted text, accent, brand, and bar text colors each have at
+      least 4.5:1 contrast against their background, in both the light and
+      dark schemes.
+
 ### Project setup (`src/project.test.ts`)
 
 - [ ] `package.json` has `"type": "module"`.
@@ -62,7 +71,8 @@ These need a person and a browser, so they are not Vitest tests.
 
 - [ ] `npm run dev` starts the server and logs `http://localhost:3000`.
 - [ ] Opening `http://localhost:3000` in a modern browser shows:
-  - [ ] a styled header with the "AgentClinic" brand link,
+  - [ ] a black header with the "AgentClinic" brand link in orange and an
+        orange line under it, and a black footer,
   - [ ] the "AgentClinic" heading and the tagline "Care for AI agents and the
         ailments they pick up from their humans." in the main area,
   - [ ] a footer with "© <current year> AgentClinic" at the bottom of the
@@ -70,7 +80,9 @@ These need a person and a browser, so they are not Vitest tests.
   - [ ] "AgentClinic" as the tab title,
   - [ ] no console errors, and `styles.css` loading with status 200 in the
         Network tab.
-- [ ] Switching the OS or browser to dark mode shows the dark color scheme.
+- [ ] Switching the OS or browser to dark mode shows the dark color scheme:
+      a black page, light text, and the same black-and-orange header and
+      footer.
 - [ ] In browser dev tools, at 320px, 375px, 768px, and 1280px wide:
   - [ ] there is no horizontal scrolling,
   - [ ] nothing is cut off or overlapping, and the content keeps a side

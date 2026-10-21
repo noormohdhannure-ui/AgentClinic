@@ -41,13 +41,16 @@ that component.
 Follow the responsive design rules in `specs/tech-stack.md`.
 
 1. Create `public/styles.css` with color and font tokens on `:root` and a
-   dark-mode override under `prefers-color-scheme: dark`.
+   dark-mode override under `prefers-color-scheme: dark`. Start the color
+   tokens from the brand colors, `--color-brand-orange` and
+   `--color-brand-black`, as set out in `specs/tech-stack.md`.
 2. Write mobile-first base styles for small screens, with `--gutter` and
    `--space-y` tokens that grow at the `40rem` and `64rem` breakpoints in
    `min-width` media queries.
 3. Lay out the body as a grid so the footer stays at the bottom of short
    pages (`min-height: 100dvh`).
-4. Style the header as a wrapping flex row, the brand link with a
+4. Style the header and footer as black bars, the header as a wrapping flex
+   row with an orange bottom border, the brand link in orange with a
    `--touch-target` minimum height, the main content capped at
    `--content-width` with a side gutter, a `clamp()` heading, and the footer.
 5. Add base rules so media scales to its container and long words wrap.
@@ -114,6 +117,11 @@ Every automated check in `validation.md` is covered by a Vitest test.
    4. Media is capped at `100%` width and long words wrap.
    5. The brand link has a `--touch-target` minimum height, and the heading
       uses `clamp()`.
+   6. The brand tokens are orange `#f97316` and black `#0a0a0a`; the header
+      and footer use the black bar color, the header has a 4px orange
+      border, and the brand link is orange.
+   7. Every text and background color pair has at least 4.5:1 contrast in
+      both the light and dark schemes.
 4. Project tests in `src/project.test.ts`:
    1. `package.json` is an ES module package and defines all six scripts.
    2. `tsconfig.json` leaves test files out of the build.

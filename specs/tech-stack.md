@@ -31,6 +31,7 @@ parts and a client-side React focus we don't need).
 | Web framework   | Hono with `@hono/node-server`                   |
 | Views           | Hono JSX, server-rendered                       |
 | Styling         | Plain modern CSS (custom properties, grid, flexbox) in a single stylesheet, responsive and mobile-first |
+| Brand colors    | Orange and black, as CSS custom properties      |
 | Database        | SQLite, via `better-sqlite3`                    |
 | Input validation | Zod, via `@hono/zod-validator`                 |
 | Testing         | Vitest, using Hono's `app.request()` for route tests |
@@ -47,6 +48,31 @@ parts and a client-side React focus we don't need).
 - Target current evergreen browsers (Chrome, Edge, Firefox, Safari); no
   legacy polyfills.
 - Every page follows the responsive design rules below.
+- Component props are defined as a named TypeScript `type` above the
+  component (`type LayoutProps = { ... }`), not inline in the function
+  signature.
+
+## Brand colors
+
+AgentClinic's brand colors are **orange and black**. They are defined once as
+CSS custom properties in `public/styles.css`, and every other color is built
+around them.
+
+| Token                  | Value     | Use                                      |
+| ---------------------- | --------- | ---------------------------------------- |
+| `--color-brand-orange` | `#f97316` | Brand name, header accent border, highlights on black |
+| `--color-brand-black`  | `#0a0a0a` | Header and footer bars, body text (light scheme), page background (dark scheme) |
+| `--color-accent`       | `#c2410c` light, `#fb923c` dark | Orange for links and text on the page background |
+
+- **Header and footer are black bars** in both color schemes, with the
+  brand name in bright orange and an orange border under the header.
+- **Bright orange is not used for text on light backgrounds.** It reaches
+  only 2.8:1 contrast on white, so text uses the darker `--color-accent`
+  orange instead. Bright orange is for black backgrounds and decoration.
+- **Text contrast is at least 4.5:1** (WCAG AA) in both color schemes.
+  Vitest tests in `src/styles.test.ts` check the brand tokens and compute
+  the contrast of every text and background pair.
+- Grays are neutral (no blue or warm tint) so they sit with black and orange.
 
 ## Responsive design
 

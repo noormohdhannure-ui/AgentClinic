@@ -3,7 +3,12 @@ import { Footer } from "./Footer.js";
 import { Header } from "./Header.js";
 import { Main } from "./Main.js";
 
-export function Layout({ title, children }: { title: string; children?: Child }) {
+type LayoutProps = {
+  title: string;
+  children?: Child;
+};
+
+export function Layout({ title, children }: LayoutProps) {
   return (
     <html lang="en">
       <head>

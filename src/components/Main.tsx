@@ -1,5 +1,9 @@
 import type { Child } from "hono/jsx";
 
-export function Main({ children }: { children?: Child }) {
+type MainProps = {
+  children?: Child;
+};
+
+export function Main({ children }: MainProps) {
   return <main class="site-main">{children}</main>;
 }

@@ -47,6 +47,11 @@ current evergreen browsers, following the responsive design rules in
 
 - Colors, fonts, and spacing defined as CSS custom properties on `:root`,
   with a dark color scheme when the browser prefers it.
+- Brand colors orange (`#f97316`) and black (`#0a0a0a`), following the brand
+  color rules in `specs/tech-stack.md`: black header and footer bars, the
+  brand name in orange with an orange border under the header, darker orange
+  for text on light backgrounds, and at least 4.5:1 text contrast in both
+  color schemes.
 - System font stack; no web fonts or images.
 - Mobile-first: base styles fit a 320px-wide phone, and `min-width` media
   queries at `40rem` and `64rem` widen the gutter and vertical spacing.
@@ -72,7 +77,7 @@ The home page's content, inside the layout, is only:
 - Navigation links beyond the brand link (Phase 2).
 - Describing the clinic's services on the home page (Phase 2).
 - Client-side JavaScript.
-- SQLite and any data (Phase 3 onward).
+- SQLite and any data (Phase 2 onward).
 - A health-check route.
 
 ## Decisions
