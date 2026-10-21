@@ -25,6 +25,22 @@ describe("GET /", () => {
     expect(body).toMatch(/<footer class="site-footer">[\s\S]*AgentClinic[\s\S]*<\/footer>/);
     expect(body).toContain('<link rel="stylesheet" href="/styles.css"/>');
   });
+
+  it("has only the brand link and no client-side JavaScript", async () => {
+    const body = await (await app.request("/")).text();
+
+    expect(body.match(/<a\b[^>]*>/g)).toEqual(['<a class="brand" href="/">']);
+    expect(body).not.toContain("<script");
+    expect(body).not.toContain("<nav");
+  });
+});
+
+describe("unknown routes", () => {
+  it("return 404", async () => {
+    const res = await app.request("/agents");
+
+    expect(res.status).toBe(404);
+  });
 });
 
 describe("GET /styles.css", () => {

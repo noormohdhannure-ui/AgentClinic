@@ -1,3 +1,10 @@
+/*
+ * Mobile-first: base styles target small screens (from 320px wide), and
+ * min-width media queries add to them at these breakpoints:
+ *   40rem (640px)  tablet
+ *   64rem (1024px) desktop
+ */
+
 :root {
   --color-bg: #f7f8fa;
   --color-surface: #ffffff;
@@ -8,6 +15,22 @@
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --content-width: 64rem;
   --gutter: 1rem;
+  --space-y: 1.5rem;
+  --touch-target: 2.75rem;
+}
+
+@media (min-width: 40rem) {
+  :root {
+    --gutter: 1.5rem;
+    --space-y: 2rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --gutter: 2rem;
+    --space-y: 3rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,15 +50,31 @@
   box-sizing: border-box;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
   grid-template-rows: auto 1fr auto;
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
+  font-size: 1rem;
   line-height: 1.6;
+  overflow-wrap: break-word;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 .site-header,
@@ -44,14 +83,21 @@ body {
   border-color: var(--color-border);
   border-style: solid;
   border-width: 0;
-  padding: 1rem max(var(--gutter), (100% - var(--content-width)) / 2);
+  padding: 0.75rem max(var(--gutter), (100% - var(--content-width)) / 2);
 }
 
 .site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
   border-bottom-width: 1px;
 }
 
 .brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
   color: var(--color-accent);
   font-size: 1.25rem;
   font-weight: 700;
@@ -62,12 +108,12 @@ body {
   width: 100%;
   max-width: var(--content-width);
   margin: 0 auto;
-  padding: 2rem var(--gutter);
+  padding: var(--space-y) var(--gutter);
 }
 
 h1 {
   margin: 0 0 0.5rem;
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(2rem, 1.5rem + 2.5vw, 3rem);
   line-height: 1.2;
 }
 

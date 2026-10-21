@@ -11,7 +11,8 @@ merge checklist.
 3. Enable Hono JSX: `"jsx": "react-jsx"`, `"jsxImportSource": "hono/jsx"`.
 4. Exclude `src/**/*.test.ts` and `src/**/*.test.tsx` from the TypeScript
    build.
-5. Confirm `npm run build` still succeeds.
+5. Confirm `npm run build` still succeeds (the `validate` script comes in
+   group 8).
 
 ## 2. Install dependencies
 
@@ -35,17 +36,25 @@ that component.
    links the stylesheet, and composes `<Header />`, `<Main>{children}</Main>`,
    and `<Footer />` in the body.
 
-## 4. Add the stylesheet
+## 4. Add the responsive stylesheet
+
+Follow the responsive design rules in `specs/tech-stack.md`.
 
 1. Create `public/styles.css` with color and font tokens on `:root` and a
    dark-mode override under `prefers-color-scheme: dark`.
-2. Lay out the body as a grid so the footer stays at the bottom of short
-   pages.
-3. Style the header, brand link, main content width, heading, and footer.
-4. In `src/app.ts`, import `serveStatic` from
+2. Write mobile-first base styles for small screens, with `--gutter` and
+   `--space-y` tokens that grow at the `40rem` and `64rem` breakpoints in
+   `min-width` media queries.
+3. Lay out the body as a grid so the footer stays at the bottom of short
+   pages (`min-height: 100dvh`).
+4. Style the header as a wrapping flex row, the brand link with a
+   `--touch-target` minimum height, the main content capped at
+   `--content-width` with a side gutter, a `clamp()` heading, and the footer.
+5. Add base rules so media scales to its container and long words wrap.
+6. In `src/app.ts`, import `serveStatic` from
    `@hono/node-server/serve-static` and serve `./public`, so the file is
    available at `/styles.css`.
-5. Link it from `Layout` with `<link rel="stylesheet" href="/styles.css">`.
+7. Link it from `Layout` with `<link rel="stylesheet" href="/styles.css">`.
 
 ## 5. Create the minimal home page
 
@@ -73,19 +82,44 @@ that component.
 2. `build`: `tsc`
 3. `start`: `node dist/index.js`
 4. `test`: `vitest run`
+5. `test:watch`: `vitest`
+6. `validate`: `npm run build && npm test`
 
-## 9. Add tests
+## 9. Add Vitest tests
 
-1. In `src/app.test.ts`, call `app.request("/")` and assert status 200 and an
-   HTML `Content-Type`.
-2. Assert the body starts with `<!doctype html>` and contains the title,
-   heading, and tagline.
-3. Assert the body has the header, main, and footer elements, with the
-   heading inside `<main>`, and the stylesheet link.
-4. Call `app.request("/styles.css")` and assert status 200 and a CSS
-   `Content-Type`.
+Every automated check in `validation.md` is covered by a Vitest test.
+
+1. Route tests in `src/app.test.ts`, using `app.request()`:
+   1. `GET /` returns 200 with an HTML `Content-Type`, starts with
+      `<!doctype html>`, and contains the title, heading, and tagline.
+   2. The page has the header, main, and footer elements, with the heading
+      inside `<main>`, and links the stylesheet.
+   3. The page's only link is the brand link, with no `<script>` or `<nav>`.
+   4. `GET /styles.css` returns 200 with a CSS `Content-Type`.
+   5. An unknown route returns 404.
+2. Component tests in `src/components/components.test.tsx`:
+   1. `Header`, `Main`, and `Footer` each render their element and content.
+   2. `Layout` renders the document head, title, and stylesheet link, and
+      composes header, main, and footer in order.
+   3. Each component file exports only its component, and `Layout.tsx`
+      imports the other three from their own files.
+   4. Start the file with `/** @jsxImportSource hono/jsx */`, since test
+      files are outside `tsconfig.json`.
+3. Responsive stylesheet tests in `src/styles.test.ts`, reading
+   `public/styles.css`:
+   1. Width media queries are `min-width` only and use only the `40rem` and
+      `64rem` breakpoints.
+   2. No fixed pixel widths.
+   3. Main content is capped at `--content-width` with a side gutter.
+   4. Media is capped at `100%` width and long words wrap.
+   5. The brand link has a `--touch-target` minimum height, and the heading
+      uses `clamp()`.
+4. Project tests in `src/project.test.ts`:
+   1. `package.json` is an ES module package and defines all six scripts.
+   2. `tsconfig.json` leaves test files out of the build.
 5. Run `npm test` and confirm it passes.
 
 ## 10. Verify
 
-1. Work through every item in `validation.md`.
+1. Run `npm run validate` and confirm the build and every test pass.
+2. Work through the manual checks in `validation.md`.

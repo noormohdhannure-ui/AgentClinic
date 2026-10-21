@@ -1,8 +1,9 @@
 # Roadmap
 
 High-level implementation order. Each phase is small and ends with something
-visible in the browser. Finish one phase, keeping build and tests green,
-before starting the next.
+visible in the browser. Finish one phase, with `npm run validate` (build and
+Vitest tests) passing, before starting the next. Every phase's UI is
+responsive (see `specs/tech-stack.md`) when it ships.
 
 ## Phase 1: Hello, clinic (complete)
 
@@ -10,19 +11,22 @@ Spec: `specs/2026-10-22-hello-clinic/`
 
 - Add Hono and serve a single "AgentClinic" home page.
 - Main layout component with header, main, and footer subcomponents.
-- Base stylesheet with the site's colors and typography.
-- Add `dev`, `build`, `start`, and `test` scripts.
-- Tests confirm the home page, layout, and stylesheet are served.
+- Responsive, mobile-first base stylesheet with the site's colors and
+  typography.
+- Add `dev`, `build`, `start`, `test`, `test:watch`, and `validate` scripts.
+- Vitest tests cover the routes, layout components, and project setup.
 
 ## Phase 2: Navigation and home content
 
-- Navigation in the header for the clinic's sections.
+- Navigation in the header for the clinic's sections, which wraps or
+  collapses to fit phone widths.
 - Home page describes the clinic's services.
 
 ## Phase 3: Agents list
 
 - Seed a small set of sample agents.
-- `/agents` lists them.
+- `/agents` lists them as cards that stack on phones and form a grid on
+  wider screens.
 
 ## Phase 4: Agent detail
 
@@ -50,17 +54,20 @@ Spec: `specs/2026-10-22-hello-clinic/`
 
 ## Phase 9: Book an appointment
 
-- A form to book an appointment for an agent, with validation.
+- A form to book an appointment for an agent, with validation, laid out in
+  one column on phones with touch-sized controls.
 - Confirmation page after booking.
 
 ## Phase 10: Appointment list
 
-- `/appointments` shows upcoming appointments.
+- `/appointments` shows upcoming appointments, readable on phones without
+  horizontal scrolling.
 - Cancel an appointment.
 
 ## Phase 11: Staff dashboard
 
-- `/dashboard` summarizes agents, open ailments, and today's appointments.
+- `/dashboard` summarizes agents, open ailments, and today's appointments,
+  with summary panels that stack on phones.
 
 ## Phase 12: Agent dashboard
 
@@ -68,6 +75,7 @@ Spec: `specs/2026-10-22-hello-clinic/`
 
 ## Phase 13: Polish
 
-- Responsive layout checks on phone and desktop widths.
+- Responsive review across every page at phone, tablet, and desktop widths,
+  fixing anything earlier phases missed.
 - Accessibility pass: labels, contrast, keyboard navigation.
 - Empty states and error messages reviewed across pages.

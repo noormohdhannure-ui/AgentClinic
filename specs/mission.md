@@ -37,8 +37,10 @@ tools they need to manage that care.
    well-understood TypeScript stack over novelty. *(Engineering)*
 2. **Features serve care.** Every feature should help an agent get relief or
    help staff deliver it. *(Product)*
-3. **Attractive and modern.** The site should look good and work well in
-   current evergreen browsers. *(Marketing)*
+3. **Attractive, modern, and responsive.** The site should look good and
+   work well in current evergreen browsers on any screen size: phones,
+   tablets, and desktops, including the displays at a conference booth.
+   *(Marketing)*
 4. **Small, visible steps.** We ship in tiny phases, each ending with
    something a person can see and use.
 

@@ -21,8 +21,10 @@ CSS, Vitest, `tsx watch`).
 - One stylesheet, served by the app and linked from the layout.
 - A minimal AgentClinic home page rendered inside the layout, served at
   `GET /` using Hono with `@hono/node-server`.
-- npm scripts: `dev`, `build`, `start`, and `test`.
-- Vitest tests for the home page, the layout, and the stylesheet.
+- npm scripts: `dev`, `build`, `start`, `test`, `test:watch`, and
+  `validate`.
+- Vitest tests covering every automated check in `validation.md`: routes,
+  components, and project setup.
 
 ### Main layout
 
@@ -39,14 +41,22 @@ CSS, Vitest, `tsx watch`).
 
 ### Stylesheet
 
-`public/styles.css` gives the site a clean, modern look in current evergreen
-browsers:
+`public/styles.css` gives the site a clean, modern, responsive look in
+current evergreen browsers, following the responsive design rules in
+`specs/tech-stack.md`:
 
-- Colors and fonts defined as CSS custom properties on `:root`, with a dark
-  color scheme when the browser prefers it.
+- Colors, fonts, and spacing defined as CSS custom properties on `:root`,
+  with a dark color scheme when the browser prefers it.
 - System font stack; no web fonts or images.
-- Header and footer span the full width; content is centered and capped in
-  width, with a side gutter so it works at phone width.
+- Mobile-first: base styles fit a 320px-wide phone, and `min-width` media
+  queries at `40rem` and `64rem` widen the gutter and vertical spacing.
+- Header and footer span the full width; content is centered and capped at
+  `--content-width`, with a side gutter at every width.
+- The header is a wrapping flex row, ready for Phase 2's navigation.
+- The brand link is at least `--touch-target` (44px) tall.
+- The heading scales with `clamp()`; body text is `1rem`.
+- Media scales to its container and long words wrap, so nothing causes
+  horizontal scrolling.
 - The footer stays at the bottom of the window on short pages.
 
 ### Minimal home page
@@ -94,4 +104,12 @@ The home page's content, inside the layout, is only:
 - **Dependencies.** Runtime: `hono`, `@hono/node-server`. Dev: `typescript`,
   `tsx`, `vitest`, `@types/node`.
 - **Tests excluded from build.** `*.test.ts` and `*.test.tsx` files are not
-  emitted to `dist/`.
+  emitted to `dist/`. Because of this, `.tsx` test files name the JSX runtime
+  with a `/** @jsxImportSource hono/jsx */` comment.
+- **Responsive from the start.** The layout and stylesheet follow the
+  responsive design rules in `specs/tech-stack.md` now, so later phases
+  build on a mobile-first base instead of retrofitting one.
+- **Validation with Vitest.** Following `specs/tech-stack.md`, every
+  automated check in `validation.md` is a Vitest test, and
+  `npm run validate` (build, then all tests) is the merge check. Checks that
+  need a person in a browser stay manual.
