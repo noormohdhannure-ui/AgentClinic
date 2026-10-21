@@ -81,3 +81,11 @@ All notable changes to AgentClinic, newest first.
   JavaScript.
 - Updated the roadmap and tech stack for the MVP: new color tokens,
   scripts, migrations, and time handling.
+- Fixed booking for browsers without a date picker: a time typed in the
+  hint's format, `YYYY-MM-DD HH:MM`, is now accepted. The picker also now
+  starts one minute after the current time, the earliest time the clinic
+  accepts.
+- Clarified the MVP spec from what building it turned up: page titles, how
+  booking routes are mounted, when the cancelled message shows, running the
+  server from the project root, footer text size, who does the browser
+  checks, and that the changelog is committed by the person merging.
