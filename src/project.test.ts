@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 
 async function readJson(path: string) {
@@ -17,21 +17,43 @@ describe("package.json", () => {
 
     expect(pkg.scripts).toMatchObject({
       dev: "tsx watch src/index.ts",
-      build: "tsc",
+      build: "tsc -p tsconfig.build.json",
       start: "node dist/index.js",
       test: "vitest run",
       "test:watch": "vitest",
-      validate: "npm run build && npm test",
+      validate: "tsc --noEmit && npm run build && npm test",
     });
   });
 });
 
-describe("tsconfig.json", () => {
-  it("leaves test files out of the build", async () => {
+describe("TypeScript config", () => {
+  it("type-checks the test files", async () => {
     const tsconfig = await readJson("../tsconfig.json");
 
-    expect(tsconfig.exclude).toEqual(
-      expect.arrayContaining(["src/**/*.test.ts", "src/**/*.test.tsx"]),
+    expect(tsconfig.include).toEqual(["src"]);
+    expect(tsconfig.exclude).toBeUndefined();
+  });
+
+  it("leaves test files out of the build", async () => {
+    const build = await readJson("../tsconfig.build.json");
+
+    expect(build.extends).toBe("./tsconfig.json");
+    expect(build.compilerOptions).toMatchObject({ rootDir: "src", outDir: "dist" });
+    expect(build.exclude).toEqual(
+      expect.arrayContaining(["src/**/*.test.ts", "src/**/*.test.tsx", "src/test/**"]),
     );
+  });
+
+  it("needs no JSX pragma in test files", async () => {
+    const src = new URL("./", import.meta.url);
+    const testFiles = (await readdir(src, { recursive: true })).filter((file) =>
+      /\.test\.tsx?$/.test(file),
+    );
+
+    expect(testFiles.length).toBeGreaterThan(0);
+    for (const file of testFiles) {
+      const source = await readFile(new URL(file.replaceAll("\\", "/"), src), "utf8");
+      expect(source, file).not.toMatch(/^\/\*\*\s*@jsxImportSource/m);
+    }
   });
 });

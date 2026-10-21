@@ -1,5 +1,3 @@
-/** @jsxImportSource hono/jsx */
-// tsconfig.json excludes test files, so name the JSX runtime here.
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import * as FooterModule from "./Footer.js";
