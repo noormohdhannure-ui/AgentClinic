@@ -111,7 +111,8 @@ adds MVP-wide tests and updates the spec files.
   - The agent page has a "Book an appointment" link to
     `/agents/:id/appointments/new`.
   - That page has a one-column form with:
-    - a native `datetime-local` input, with `min` set to the current time;
+    - a native `datetime-local` input, with `min` set to one minute after
+      the current time, the earliest time the server accepts;
     - a format hint, "Use the format YYYY-MM-DD HH:MM", for browsers
       without a date picker;
     - an optional reason;
@@ -141,8 +142,15 @@ These exact strings are what the tests check.
 
 - **Page titles.**
   - Home: `AgentClinic`.
-  - Every other page: `<page> – AgentClinic`, for example
-    `Agents – AgentClinic` and `Ada – AgentClinic`.
+  - Section pages: `Agents – AgentClinic`, `Ailments – AgentClinic`,
+    `Therapies – AgentClinic`, and `Appointments – AgentClinic`.
+  - An agent's page: `<agent> – AgentClinic`, for example
+    `Ada – AgentClinic`.
+  - The booking page: `Book an appointment for <agent> – AgentClinic`.
+  - An appointment's page:
+    `Appointment for <agent> on <formatted time> – AgentClinic`, for
+    example `Appointment for Ada on 3 Nov 2026, 10:00 – AgentClinic`. Its
+    h1 is "Appointment booked" or "Appointment cancelled".
   - The 404 page: `Page not found – AgentClinic`.
   - Any form page re-rendered with errors: its title prefixed with
     `Error: `, so screen readers announce the error when the page loads.
@@ -154,9 +162,11 @@ These exact strings are what the tests check.
   - **Therapies.** "Browse the treatments we offer for each ailment."
   - **Appointments.** "Book time with the clinic and manage your visits."
 - **Status messages.** "Ailment reported." and "Appointment cancelled."
-  Each is shown only for the exact query value its route sets
-  (`reported=1`, or `cancelled=` an appointment id). The page never repeats
-  query text back.
+  Each is shown only for a query value in the form its route sets:
+  `reported=1`, or `cancelled=` followed by an id (`[1-9][0-9]{0,8}`). The
+  page doesn't check that the id names a cancelled appointment: the message
+  is fixed text, so a hand-typed URL can at worst show it when nothing was
+  cancelled. The page never repeats query text back.
 - **Error messages.**
 
   | Field          | Problem                                   | Message |
@@ -316,6 +326,10 @@ would soon be in the past.
     `:memory:` and calls `createApp`.
   - `src/index.ts` creates `data/` if needed and opens
     `data/agentclinic.db`.
+  - **Run from the project root.** `data/` and `public/` are found relative
+    to the working directory, not to the code. The npm scripts run from the
+    project root, so this works; starting the server from another folder
+    would create a new, empty database there and serve no stylesheet.
 - **The database module.**
   - `src/db/index.ts` exports `openDb(path)`. It opens the database, turns
     on foreign keys, and runs any pending migrations.
@@ -323,13 +337,19 @@ would soon be in the past.
     `src/db/migrations.ts`. `PRAGMA user_version` records how many have
     run.
   - The SQL lives in TypeScript modules, not `.sql` files. `tsc` doesn't
-    copy `.sql` files to `dist/`, and `serveStatic`-style paths resolve
-    from the working directory, not the project root.
+    copy `.sql` files to `dist/`, and file paths resolve from the working
+    directory (see "Run from the project root").
   - Each migration creates its tables and inserts its seed data, inside a
     transaction.
   - Queries live in one file per feature (`src/db/agents.ts`,
     `ailments.ts`, `therapies.ts`, `appointments.ts`). Routes don't contain
     SQL.
+- **Booking routes are mounted under the agent.** The booking form and its
+  POST live in `src/routes/appointments.tsx` as a `bookingRoutes` sub-app.
+  `agentRoutes` mounts it at `/agents/:id/appointments`, after the agent
+  loader, so booking for an unknown agent is a 404 before any validation.
+  `appointmentRoutes`, mounted at `/appointments`, has the list, the
+  appointment page, and cancel.
 - **Routes are grouped by feature.**
   - `src/routes/agents.tsx`, `ailments.tsx`, `therapies.tsx`, and
     `appointments.tsx` are Hono sub-apps, mounted with `app.route` before
@@ -358,8 +378,10 @@ would soon be in the past.
       "Note:" label is shown.
   - `scheduled_at` is checked in order, stopping at the first failure:
     1. It is present.
-    2. It matches `YYYY-MM-DDTHH:MM` with optional `:SS`. Seconds are
-       dropped.
+    2. It matches `YYYY-MM-DDTHH:MM` with optional `:SS`. A space may
+       replace the `T`, because the format hint tells people without a date
+       picker to type `YYYY-MM-DD HH:MM`; it is stored with the `T`.
+       Seconds are dropped.
     3. It is a real date and time: a value like `2026-02-30T10:00` or
        `25:00` fails.
     4. It is later than `now()`, so a time equal to now fails.
@@ -433,4 +455,6 @@ would soon be in the past.
     the database notes (migrations in TypeScript); and the time-zone
     limits.
   - `specs/roadmap.md`: see the plan's wrap-up.
-  - `CHANGELOG.md`, via the `/changelog` skill.
+  - `CHANGELOG.md`, via the `/changelog` skill. As the skill says, it
+    leaves the file uncommitted; the person merging commits it with the
+    rest of the branch.

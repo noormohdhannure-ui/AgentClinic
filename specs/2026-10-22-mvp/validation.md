@@ -130,7 +130,7 @@ heading.
 
 - [ ] The agent page links to `/agents/:id/appointments/new`.
 - [ ] The booking form has a labelled `datetime-local` input with `min`
-      set to `now`, the format hint linked with `aria-describedby`, and a
+      set to one minute after `now`, the format hint linked with `aria-describedby`, and a
       labelled reason.
 - [ ] A valid booking redirects with 303 to `/appointments/:id`. That page
       shows:
@@ -142,7 +142,10 @@ heading.
 - [ ] These times return 422 with the pinned message, one error per field:
       missing, blank, `2026-13-45T99:99`, `2026-02-30T10:00`, equal to
       `now`, and before `now`.
-- [ ] A time with `:SS` passes.
+- [ ] A time with `:SS` passes, and so does the minimum, one minute after
+      `now`.
+- [ ] A time typed in the hint's format, `2026-11-03 10:00` with a space,
+      books and is stored as `2026-11-03T10:00`.
 - [ ] A 501-character reason returns 422, and a 500-character reason
       passes.
 - [ ] A 422 response has the summary, `aria-invalid`, `aria-describedby`,
@@ -196,8 +199,7 @@ These checks run on every page:
 - [ ] Each page has exactly one `aria-current`, except the 404 page, which
       has none.
 - [ ] Each `<title>` follows the pinned pattern, and no two pages share a
-      title. The 422 re-renders are the exception, since they are their
-      form page with the `Error: ` prefix.
+      title.
 - [ ] No page contains `<script`.
 
 ## Manual checks
@@ -271,4 +273,4 @@ These need a person and a browser, so they are not Vitest tests.
   - the time-zone limits;
   - the `better-sqlite3` install note.
 - [ ] `CHANGELOG.md` has entries for this branch, written with
-      `/changelog`.
+      `/changelog` and committed by the person merging.

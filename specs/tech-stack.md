@@ -97,8 +97,10 @@ is responsive from the phase that introduces it, not fixed up later.
   fixed pixel widths. Cap content with `max-width: var(--content-width)` and
   keep a side gutter (`--gutter`) at every width. Use flexbox and grid with
   wrapping so rows stack on narrow screens.
-- **Fluid type.** Base text is at least `1rem`; large headings scale with
-  `clamp()`.
+- **Fluid type.** Body text, form controls, and links are at least `1rem`;
+  large headings scale with `clamp()`. Secondary text, such as the footer's
+  copyright line, may be `0.875rem` but never smaller, and still meets the
+  4.5:1 contrast rule.
 - **No horizontal scrolling** at any width from 320px up. Media scales down
   to its container, and long words wrap. Wide content such as tables gets
   its own scroll container or stacks into cards on small screens.
@@ -162,7 +164,9 @@ and live demos.
   npm asks to approve its `node-gyp` install script, don't: building from
   source needs Visual Studio build tools, and the prebuilt binary works
   without it.
-- Database file lives at `data/agentclinic.db` and is git-ignored.
+- Database file lives at `data/agentclinic.db` and is git-ignored. Like
+  `public/`, it is found relative to the working directory, so always run
+  the server from the project root (the npm scripts do).
 - **Migrations.** The schema and seed data are an ordered list of SQL
   strings in `src/db/migrations.ts`, applied at startup by `openDb()`.
   `PRAGMA user_version` records how many have run, so each runs once per

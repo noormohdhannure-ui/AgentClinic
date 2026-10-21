@@ -7,8 +7,9 @@ Group headings use the same labels as the roadmap, so "plan 3" is roadmap
 Phase 3. Each group ends the same way:
 
 1. Run `npm run validate` and confirm it passes.
-2. Check what changed in the browser at 320px and 1280px, in light and dark
-   mode.
+2. **Person:** check what changed in the browser at 320px and 1280px, in
+   light and dark mode. A coding agent without browser access can't do
+   this; it says the check is still to do instead of skipping it silently.
 3. Commit.
 
 Tests go in the same group as the code they cover, in the file named in
@@ -274,7 +275,8 @@ that group.
    `getAppointment`.
 3. Create the pages:
    - `src/pages/BookAppointmentPage.tsx`: a one-column form with:
-     - a labelled `datetime-local` input with `min` set to `now()`;
+     - a labelled `datetime-local` input with `min` set to
+       `nextMinute(now())`;
      - the format hint, linked with `aria-describedby`;
      - a labelled reason `<textarea>`;
      - a submit button.
@@ -283,12 +285,11 @@ that group.
      reason, the status, and links to "View all appointments" and the
      agent. A cancelled appointment shows "Cancelled".
 4. In `src/routes/appointments.tsx`:
-   - Add these routes:
-     - `GET /agents/:id/appointments/new`
-     - `POST /agents/:id/appointments`
-     - `GET /appointments/:id{[1-9][0-9]{0,8}}`
-
-     The booking routes run after the agent loader.
+   - Add a `bookingRoutes` sub-app with `GET /new` and `POST /`. Mount it in
+     `agentRoutes` at `/:id{[1-9][0-9]{0,8}}/appointments`, so the agent
+     loader runs first.
+   - Add an `appointmentRoutes` sub-app, mounted at `/appointments`, with
+     `GET /:id{[1-9][0-9]{0,8}}`.
    - Build the Zod schema with a factory that takes `now`, checking the
      four rules in order.
    - Set `created_at` from `now()`.
@@ -369,8 +370,7 @@ that group.
    - `<nav aria-label="Main">` with all five links;
    - exactly one `aria-current`, or none on the 404 page;
    - a `<title>` that follows the pinned pattern, and no two pages sharing
-     a title (the 422 re-renders are the exception, since they are their
-     form page with the `Error: ` prefix);
+     a title (the `Error: ` prefix keeps the 422 re-renders unique);
    - no `<script` anywhere.
 
 ## Wrap up
@@ -389,6 +389,7 @@ that group.
    - the database notes (migrations in TypeScript, `user_version`);
    - the time-zone limits;
    - the `better-sqlite3` install note.
-3. Run `/changelog` and commit the result.
+3. Run `/changelog`. Leave `CHANGELOG.md` uncommitted, as the skill says;
+   the person merging commits it with the branch.
 4. Run `npm run validate`.
-5. Work through every manual check in `validation.md`.
+5. **Person:** work through every manual check in `validation.md`.
