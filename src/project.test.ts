@@ -26,6 +26,22 @@ describe("package.json", () => {
   });
 });
 
+describe("dependencies", () => {
+  it("include SQLite and validation", async () => {
+    const pkg = await readJson("../package.json");
+
+    expect(Object.keys(pkg.dependencies)).toEqual(
+      expect.arrayContaining(["better-sqlite3", "zod", "@hono/zod-validator"]),
+    );
+  });
+
+  it("keep the database file out of git", async () => {
+    const gitignore = await readFile(new URL("../.gitignore", import.meta.url), "utf8");
+
+    expect(gitignore.split(/\r?\n/)).toContain("/data");
+  });
+});
+
 describe("TypeScript config", () => {
   it("type-checks the test files", async () => {
     const tsconfig = await readJson("../tsconfig.json");
