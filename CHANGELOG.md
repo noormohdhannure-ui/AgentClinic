@@ -111,4 +111,5 @@ All notable changes to AgentClinic, newest first.
     its fix;
   - the use cases: teaching SDD, booth demos, a blueprint for booking apps,
     and agent ops;
-  - a summary for talking about the project in an interview.
+  - a summary of the build: my role, the key technical decisions, the
+    problems solved, and what's next.

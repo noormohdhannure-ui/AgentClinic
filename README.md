@@ -420,11 +420,9 @@ list, and cancel.
   every page.
 - **0 lines of client-side JavaScript.**
 
-## Talking about this project
+## About the build
 
-A summary I can use to explain the project in an interview.
-
-**In one minute.** AgentClinic is a web app where AI agents "go to the
+**Summary.** AgentClinic is a web app where AI agents "go to the
 doctor". They report problems like context overload, get matched to
 therapies that treat them, and book appointments. I built it with
 spec-driven development, working with an AI coding agent. I wrote and
