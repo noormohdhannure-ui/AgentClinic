@@ -77,6 +77,40 @@ describe("GET /agents/:id", () => {
   });
 });
 
+describe("recommended therapies", () => {
+  it("recommends the therapies for the agent's ailments", async () => {
+    const body = await (await app.request("/agents/1")).text();
+
+    expect(body).toContain('<h2 id="recommended-heading">Recommended therapies</h2>');
+    expect(body).toMatch(/<h3>Context compaction<\/h3>[\s\S]*?For: Context overload/);
+    expect(body).toMatch(/<h3>Priority triage<\/h3>[\s\S]*?For: Context overload/);
+    expect(body).not.toContain("<h3>Boundary setting</h3>");
+  });
+
+  it("shows an empty state linking to the report form when there are no ailments", async () => {
+    const body = await (await app.request("/agents/3")).text();
+
+    expect(body).toContain("No recommendations yet.");
+    expect(body).toContain('<a href="#report-ailment">Report an ailment</a>');
+  });
+
+  it("adds a new report's therapies without duplicates", async () => {
+    const { app } = createTestApp();
+
+    await postForm(app, "/agents/3/ailments", { ailment_id: "5" });
+    await postForm(app, "/agents/3/ailments", { ailment_id: "5" });
+    await postForm(app, "/agents/3/ailments", { ailment_id: "3" });
+
+    const body = await (await app.request("/agents/3")).text();
+    expect(body.match(/<h3>Clarifying-questions session<\/h3>/g)).toHaveLength(1);
+    expect(body.match(/<h3>Boundary setting<\/h3>/g)).toHaveLength(1);
+    expect(body).toMatch(
+      /<h3>Boundary setting<\/h3>[\s\S]*?For: Endless revision requests, Scope creep/,
+    );
+    expect(body).not.toContain("No recommendations yet.");
+  });
+});
+
 describe("POST /agents/:id/ailments", () => {
   it("records a report and redirects with a status message", async () => {
     const { app } = createTestApp();

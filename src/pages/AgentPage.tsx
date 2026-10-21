@@ -5,6 +5,7 @@ import { Layout } from "../components/Layout.js";
 import { StatusMessage } from "../components/StatusMessage.js";
 import type { Agent } from "../db/agents.js";
 import type { AgentAilment, Ailment } from "../db/ailments.js";
+import type { Therapy } from "../db/therapies.js";
 import type { FieldErrors, FormValues } from "../routes/forms.js";
 import { formatWhen } from "../time.js";
 
@@ -12,6 +13,7 @@ type AgentPageProps = {
   agent: Agent;
   ailments: Ailment[];
   reports: AgentAilment[];
+  recommendations: Therapy[];
   reported?: boolean;
   values?: FormValues;
   errors?: FieldErrors;
@@ -21,6 +23,7 @@ export function AgentPage({
   agent,
   ailments,
   reports,
+  recommendations,
   reported = false,
   values = {},
   errors = {},
@@ -55,6 +58,26 @@ export function AgentPage({
                   <time datetime={report.reportedAt}>{formatWhen(report.reportedAt)}</time>
                 </span>
                 {report.note && <p>Note: {report.note}</p>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section aria-labelledby="recommended-heading">
+        <h2 id="recommended-heading">Recommended therapies</h2>
+        {recommendations.length === 0 ? (
+          <EmptyState
+            message="No recommendations yet. Report an ailment to see therapies that can help."
+            action={{ href: "#report-ailment", label: "Report an ailment" }}
+          />
+        ) : (
+          <ul class="card-grid">
+            {recommendations.map((therapy) => (
+              <li class="card">
+                <h3>{therapy.name}</h3>
+                <p>{therapy.description}</p>
+                <p class="muted">For: {therapy.ailments.join(", ")}</p>
               </li>
             ))}
           </ul>

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { type Agent, listAgents } from "../db/agents.js";
 import { ailmentExists, listAgentAilments, listAilments, reportAilment } from "../db/ailments.js";
 import type { Db } from "../db/index.js";
+import { recommendedTherapies } from "../db/therapies.js";
 import { AgentPage } from "../pages/AgentPage.js";
 import { AgentsPage } from "../pages/AgentsPage.js";
 import {
@@ -44,6 +45,7 @@ export function agentRoutes(db: Db, now: () => string) {
         agent={agent}
         ailments={listAilments(db)}
         reports={listAgentAilments(db, agent.id)}
+        recommendations={recommendedTherapies(db, agent.id)}
         reported={state.reported}
         values={state.values}
         errors={state.errors}
