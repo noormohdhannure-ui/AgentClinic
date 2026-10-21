@@ -28,7 +28,7 @@ describe("GET /agents/:id/appointments/new", () => {
     expect(body).toContain('<a href="/agents" aria-current="true">Agents</a>');
     expect(body).toContain('<label for="scheduled_at">Date and time</label>');
     expect(body).toContain(
-      `<input type="datetime-local" id="scheduled_at" name="scheduled_at" min="${TEST_NOW}" value="" aria-describedby="scheduled_at-hint"/>`,
+      '<input type="datetime-local" id="scheduled_at" name="scheduled_at" min="2026-11-01T09:01" value="" aria-describedby="scheduled_at-hint"/>',
     );
     expect(body).toContain(
       '<p id="scheduled_at-hint" class="hint">Use the format YYYY-MM-DD HH:MM</p>',
@@ -74,6 +74,24 @@ describe("POST /agents/:id/appointments", () => {
     expect(body).toContain('<a href="/appointments">View all appointments</a>');
     expect(body).toContain('<a href="/agents/1">Back to Ada</a>');
     expect(body).toContain('<a href="/appointments" aria-current="true">Appointments</a>');
+  });
+
+  it("accepts the hint's typed format, with a space instead of T", async () => {
+    const { app } = createTestApp();
+
+    const location = await book(app, 1, "2026-11-03 10:00");
+
+    expect(location).toMatch(/^\/appointments\/\d+$/);
+    const body = await (await app.request(location!)).text();
+    expect(body).toContain('<time datetime="2026-11-03T10:00">');
+  });
+
+  it("accepts the picker's minimum, one minute after now", async () => {
+    const { app } = createTestApp();
+
+    const res = await postForm(app, "/agents/1/appointments", { scheduled_at: "2026-11-01T09:01" });
+
+    expect(res.status).toBe(303);
   });
 
   it("drops seconds from the time", async () => {

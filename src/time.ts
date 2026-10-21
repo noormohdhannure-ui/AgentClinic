@@ -14,6 +14,13 @@ export function localNow(date = new Date()): string {
   );
 }
 
+// The time one minute after a YYYY-MM-DDTHH:MM value, in the same form.
+// Booking needs a time later than now, so this is the earliest it accepts.
+export function nextMinute(value: string): string {
+  const [year, month, day, hours, minutes] = value.split(/[-T:]/).map(Number);
+  return localNow(new Date(year, month - 1, day, hours, minutes + 1));
+}
+
 // "2026-11-03T10:00" -> "3 Nov 2026, 10:00", independent of server locale.
 export function formatWhen(value: string): string {
   const [date, time] = value.split("T");
@@ -22,9 +29,11 @@ export function formatWhen(value: string): string {
 }
 
 // True for a real calendar date and time in YYYY-MM-DDTHH:MM(:SS) form, so
-// values like 2026-02-30T10:00 or 2026-01-01T25:00 are rejected.
+// values like 2026-02-30T10:00 or 2026-01-01T25:00 are rejected. A space
+// may stand in for the T: browsers without a date picker show a text box,
+// and the format hint tells people to type "YYYY-MM-DD HH:MM".
 export function isRealDateTime(value: string): boolean {
-  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/);
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?$/);
   if (!match) return false;
   // A missing seconds group is undefined, which Number() would turn into NaN.
   const [year, month, day, hours, minutes, seconds] = match

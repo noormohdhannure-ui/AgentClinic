@@ -6,7 +6,8 @@ import type { FieldErrors, FormValues } from "../routes/forms.js";
 
 type BookAppointmentPageProps = {
   agent: Agent;
-  // The earliest time the picker offers: the current time.
+  // The earliest time the picker offers: one minute after now, the earliest
+  // time the server accepts.
   min: string;
   values?: FormValues;
   errors?: FieldErrors;

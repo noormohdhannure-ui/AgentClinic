@@ -11,7 +11,7 @@ import type { Db } from "../db/index.js";
 import { AppointmentPage } from "../pages/AppointmentPage.js";
 import { AppointmentsPage } from "../pages/AppointmentsPage.js";
 import { BookAppointmentPage } from "../pages/BookAppointmentPage.js";
-import { isRealDateTime } from "../time.js";
+import { isRealDateTime, nextMinute } from "../time.js";
 import { firstErrors, formValues, optionalText } from "./forms.js";
 import { type AgentEnv, currentAgent } from "./loadAgent.js";
 import { ID } from "./params.js";
@@ -21,7 +21,8 @@ const REAL_TIME = "Enter a real date and time, like 2026-11-03 10:00.";
 const FUTURE_TIME = "Choose a time in the future.";
 
 // The checks run in order and stop at the first failure, so each field shows
-// one error. Seconds, which some browsers send, are dropped.
+// one error. Seconds, which some browsers send, are dropped, and a typed
+// space separator is stored as the T a date picker sends.
 export function bookingSchema(now: () => string) {
   return z.object({
     scheduled_at: z.string({ error: ENTER_TIME }).transform((input, ctx) => {
@@ -34,7 +35,7 @@ export function bookingSchema(now: () => string) {
         ctx.addIssue({ code: "custom", message: REAL_TIME });
         return z.NEVER;
       }
-      const minute = value.slice(0, 16);
+      const minute = value.slice(0, 16).replace(" ", "T");
       if (minute <= now()) {
         ctx.addIssue({ code: "custom", message: FUTURE_TIME });
         return z.NEVER;
@@ -51,7 +52,7 @@ export function bookingRoutes(db: Db, now: () => string) {
   const booking = new Hono<AgentEnv>();
 
   booking.get("/new", (c) =>
-    c.render(<BookAppointmentPage agent={c.get("agent")} min={now()} />),
+    c.render(<BookAppointmentPage agent={c.get("agent")} min={nextMinute(now())} />),
   );
 
   booking.post(
@@ -62,7 +63,7 @@ export function bookingRoutes(db: Db, now: () => string) {
         return c.render(
           <BookAppointmentPage
             agent={currentAgent(c)}
-            min={now()}
+            min={nextMinute(now())}
             values={await formValues(c)}
             errors={firstErrors(result.error.issues)}
           />,
