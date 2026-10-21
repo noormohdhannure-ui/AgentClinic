@@ -1,0 +1,93 @@
+# Requirements: Hello, clinic (Phase 1)
+
+## Context
+
+This is Phase 1 of `specs/roadmap.md`. The project currently has a TypeScript
+starter (`src/index.ts` logs a message) with CommonJS output and no web
+server. This phase sets up the foundation every later phase builds on:
+a running Hono server, a shared page layout with a stylesheet, the npm
+scripts, and a working test setup.
+
+See `specs/mission.md` (reliable first, attractive and modern, small visible
+steps) and `specs/tech-stack.md` (Hono on Node.js, Hono JSX, plain modern
+CSS, Vitest, `tsx watch`).
+
+## Scope
+
+### In scope
+
+- A main layout component made of three subcomponents: header, main, and
+  footer (see below).
+- One stylesheet, served by the app and linked from the layout.
+- A minimal AgentClinic home page rendered inside the layout, served at
+  `GET /` using Hono with `@hono/node-server`.
+- npm scripts: `dev`, `build`, `start`, and `test`.
+- Vitest tests for the home page, the layout, and the stylesheet.
+
+### Main layout
+
+`Layout` renders the full HTML5 document and is used by every page:
+
+- `<html lang="en">`, a UTF-8 charset, a viewport meta tag, and a `<title>`
+  passed in by the page.
+- `<link rel="stylesheet" href="/styles.css">`.
+- A body made of three subcomponents:
+  - **Header**: the "AgentClinic" brand, linking to `/`.
+  - **Main**: wraps the page's own content.
+  - **Footer**: a copyright line, "© <current year> AgentClinic".
+
+### Stylesheet
+
+`public/styles.css` gives the site a clean, modern look in current evergreen
+browsers:
+
+- Colors and fonts defined as CSS custom properties on `:root`, with a dark
+  color scheme when the browser prefers it.
+- System font stack; no web fonts or images.
+- Header and footer span the full width; content is centered and capped in
+  width, with a side gutter so it works at phone width.
+- The footer stays at the bottom of the window on short pages.
+
+### Minimal home page
+
+The home page's content, inside the layout, is only:
+
+- An `<h1>` reading "AgentClinic".
+- One `<p>` with the tagline: "Care for AI agents and the ailments they pick
+  up from their humans."
+
+### Out of scope
+
+- Navigation links beyond the brand link (Phase 2).
+- Describing the clinic's services on the home page (Phase 2).
+- Client-side JavaScript.
+- SQLite and any data (Phase 3 onward).
+- A health-check route.
+
+## Decisions
+
+- **ES modules.** Move the project to ESM: `"type": "module"` in
+  `package.json`, and `tsconfig.json` uses `"module": "NodeNext"`,
+  `"moduleResolution": "NodeNext"`, and `"target": "ES2022"`. Hono and
+  Vitest are ESM-first, and doing this now avoids a migration later.
+- **Hono JSX for views.** `tsconfig.json` sets `"jsx": "react-jsx"` and
+  `"jsxImportSource": "hono/jsx"`. Pages and components are `.tsx` files
+  rendered on the server; no React and no client bundle.
+- **Components live in `src/components/`.** `Layout.tsx` composes
+  `Header.tsx`, `Main.tsx`, and `Footer.tsx`. Pages such as `src/home.tsx`
+  wrap their content in `Layout`.
+- **App and server are separate.** `src/app.ts` builds and exports the Hono
+  app; `src/index.ts` starts the Node server. Tests import the app and call
+  `app.request()` without opening a port.
+- **Doctype added by the route.** JSX cannot emit `<!doctype html>`, so the
+  route prepends it to the rendered page.
+- **Static files from `public/`.** `src/app.ts` imports `serveStatic` from
+  `@hono/node-server/serve-static` and serves `./public` after the routes,
+  so `public/styles.css` is available at `/styles.css`. Paths resolve from
+  the project root, which is where the npm scripts run.
+- **Port.** The server listens on `PORT` from the environment, defaulting to
+  `3000`.
+- **Dependencies.** Runtime: `hono`, `@hono/node-server`. Dev: `typescript`,
+  `tsx`, `vitest`, `@types/node`.
+- **Tests excluded from build.** `*.test.ts` and `*.test.tsx` files are not
+  emitted to `dist/`.
