@@ -21,7 +21,7 @@ export function createApp(db: Db, { now = localNow }: AppOptions = {}) {
   app.use(jsxRenderer(({ children }) => <>{children}</>, { docType: "<!doctype html>" }));
 
   app.get("/", (c) => c.render(<HomePage />));
-  app.route("/agents", agentRoutes(db));
+  app.route("/agents", agentRoutes(db, now));
   app.route("/ailments", ailmentRoutes(db));
 
   app.use("/*", serveStatic({ root: "./public" }));

@@ -1,18 +1,26 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import * as AgentCardModule from "./AgentCard.js";
+import * as EmptyStateModule from "./EmptyState.js";
+import * as FieldErrorModule from "./FieldError.js";
+import * as FormErrorsModule from "./FormErrors.js";
 import * as FooterModule from "./Footer.js";
 import * as HeaderModule from "./Header.js";
 import * as LayoutModule from "./Layout.js";
 import * as MainModule from "./Main.js";
 import * as NavModule from "./Nav.js";
+import * as StatusMessageModule from "./StatusMessage.js";
 
 const { AgentCard } = AgentCardModule;
+const { EmptyState } = EmptyStateModule;
+const { FieldError } = FieldErrorModule;
+const { FormErrors } = FormErrorsModule;
 const { Footer } = FooterModule;
 const { Header } = HeaderModule;
 const { Layout } = LayoutModule;
 const { Main } = MainModule;
 const { Nav } = NavModule;
+const { StatusMessage } = StatusMessageModule;
 
 describe("Header", () => {
   it("renders the brand link to the home page", () => {
@@ -61,6 +69,51 @@ describe("AgentCard", () => {
     expect(html).toContain('<h2><a href="/agents/3">Ledger</a></h2>');
     expect(html).toContain('<p class="muted">Spreadsheet analyst</p>');
     expect(html).toContain("Works for: A finance team");
+  });
+});
+
+describe("FormErrors", () => {
+  it("renders nothing without errors", () => {
+    expect(String(<FormErrors errors={{}} />)).toBe("");
+  });
+
+  it("summarizes each error as a link to its field", () => {
+    const html = String(<FormErrors errors={{ scheduled_at: "Enter a date and time." }} />);
+
+    expect(html).toContain('<h2 id="form-errors-heading">There is a problem</h2>');
+    expect(html).toContain('<a href="#scheduled_at">Enter a date and time.</a>');
+  });
+});
+
+describe("FieldError", () => {
+  it("renders the message with the id aria-describedby points to", () => {
+    expect(String(<FieldError field="note" message="Too long." />)).toBe(
+      '<p id="note-error" class="field-error">Too long.</p>',
+    );
+  });
+
+  it("renders nothing without a message", () => {
+    expect(String(<FieldError field="note" />)).toBe("");
+  });
+});
+
+describe("EmptyState", () => {
+  it("shows the message and an optional next action", () => {
+    const html = String(
+      <EmptyState message="Nothing here." action={{ href: "/agents", label: "Go" }} />,
+    );
+
+    expect(html).toContain("<p>Nothing here.</p>");
+    expect(html).toContain('<a href="/agents">Go</a>');
+    expect(String(<EmptyState message="Nothing here." />)).not.toContain("<a");
+  });
+});
+
+describe("StatusMessage", () => {
+  it("renders a status region", () => {
+    expect(String(<StatusMessage message="Done." />)).toBe(
+      '<p class="status-message" role="status">Done.</p>',
+    );
   });
 });
 
@@ -124,6 +177,10 @@ describe("component files", () => {
     ["Layout", LayoutModule],
     ["Nav", NavModule],
     ["AgentCard", AgentCardModule],
+    ["EmptyState", EmptyStateModule],
+    ["FieldError", FieldErrorModule],
+    ["FormErrors", FormErrorsModule],
+    ["StatusMessage", StatusMessageModule],
   ])("%s.tsx exports only its component", (name, module) => {
     expect(Object.keys(module)).toEqual([name]);
   });

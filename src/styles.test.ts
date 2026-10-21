@@ -215,6 +215,16 @@ describe("accessibility base", () => {
     expect(rule(".card")).toContain("border: 1px solid var(--color-border)");
   });
 
+  it("gives form controls 1rem text, touch-sized targets, and a 3:1 border", () => {
+    const controls = rule("textarea");
+
+    expect(controls).toContain("font-size: 1rem");
+    expect(controls).toContain("min-height: var(--touch-target)");
+    expect(controls).toContain("border: 1px solid var(--color-input-border)");
+    expect(rule(".button")).toContain("min-height: var(--touch-target)");
+    expect(rule(".button:visited")).toContain("color: var(--color-button-text)");
+  });
+
   it("keeps the skip link out of the body grid", () => {
     expect(rule(".skip-link")).toContain("position: absolute");
     expect(rule(".skip-link")).toContain("min-height: var(--touch-target)");
@@ -235,6 +245,11 @@ const contrastPairs: [string, string, number, "page" | "bar"][] = [
   ["--color-muted", "--color-surface", 4.5, "page"],
   ["--color-accent", "--color-surface", 4.5, "page"],
   ["--color-focus", "--color-surface", 3, "page"],
+  ["--color-error", "--color-bg", 4.5, "page"],
+  ["--color-error", "--color-surface", 4.5, "page"],
+  ["--color-button-text", "--color-button-bg", 4.5, "page"],
+  ["--color-input-border", "--color-bg", 3, "page"],
+  ["--color-input-border", "--color-surface", 3, "page"],
   // Links and visited links share the accent color.
   ["--color-accent", "--color-bg", 4.5, "page"],
   ["--color-focus", "--color-bg", 3, "page"],

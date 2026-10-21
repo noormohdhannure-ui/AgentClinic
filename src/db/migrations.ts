@@ -56,4 +56,25 @@ CREATE TABLE ailments (
         [6, "Tool-call fatigue", "Worn down by long chains of tool calls."],
       ],
     ),
+
+  // 2. Reported ailments (MVP 3).
+  `
+CREATE TABLE agent_ailments (
+  id INTEGER PRIMARY KEY,
+  agent_id INTEGER NOT NULL REFERENCES agents (id) ON DELETE RESTRICT,
+  ailment_id INTEGER NOT NULL REFERENCES ailments (id) ON DELETE RESTRICT,
+  note TEXT,
+  reported_at TEXT NOT NULL
+);
+
+CREATE INDEX agent_ailments_agent_id ON agent_ailments (agent_id);
+` +
+    insert(
+      "agent_ailments",
+      ["id", "agent_id", "ailment_id", "note", "reported_at"],
+      [
+        [1, 1, 1, "Three repos open at once.", "2026-10-20T09:00"],
+        [2, 2, 3, "Chapter one, draft 14.", "2026-10-21T14:30"],
+      ],
+    ),
 ];

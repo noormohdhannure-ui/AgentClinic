@@ -22,6 +22,12 @@
   --color-muted: #525252;
   /* Card borders are decorative; card content carries its own contrast. */
   --color-border: #d4d4d4;
+  /* Form controls need a 3:1 boundary, unlike decorative card borders. */
+  --color-input-border: #737373;
+  --color-error: #b91c1c;
+  /* Black on bright orange; white on bright orange is only 2.8:1. */
+  --color-button-bg: var(--color-brand-orange);
+  --color-button-text: var(--color-brand-black);
   /* Bright orange is too light for text on a light background; this darker
      orange keeps text contrast above 4.5:1. */
   --color-accent: #c2410c;
@@ -56,6 +62,7 @@
     --color-text: #f5f5f5;
     --color-muted: #a3a3a3;
     --color-border: #404040;
+    --color-error: #f87171;
     --color-accent: #fb923c;
     --color-focus: var(--color-brand-orange);
   }
@@ -276,6 +283,117 @@ h3 {
 
 .details dd {
   margin: 0 0 0.75rem;
+}
+
+.report-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.report-list li + li {
+  margin-top: 0.75rem;
+}
+
+.report-list p {
+  margin: 0.25rem 0 0;
+}
+
+.empty-state p {
+  margin: 0 0 0.5rem;
+  color: var(--color-muted);
+}
+
+.status-message {
+  margin: 0 0 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--color-surface);
+  border-left: 4px solid var(--color-brand-orange);
+}
+
+/* Forms: one column, with touch-sized controls and 1rem text so phones
+   don't zoom in on focus. */
+.form {
+  display: grid;
+  gap: 1rem;
+  max-width: 36rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: var(--touch-target);
+  padding: 0.5rem 0.75rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-input-border);
+  border-radius: 0.375rem;
+  font: inherit;
+  font-size: 1rem;
+}
+
+[aria-invalid="true"] {
+  border: 2px solid var(--color-error);
+}
+
+.hint {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.field-error {
+  margin: 0;
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.form-errors {
+  margin-bottom: var(--space-y);
+  padding: 1rem;
+  border: 2px solid var(--color-error);
+  border-radius: 0.5rem;
+}
+
+.form-errors h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+.form-errors ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+/* Visited is included so link buttons don't take the visited link color. */
+.button,
+.button:visited {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target);
+  padding: 0.5rem 1.25rem;
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
+  border: 0;
+  border-radius: 0.375rem;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  text-decoration: underline;
 }
 
 .service-list {
