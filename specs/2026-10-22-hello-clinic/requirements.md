@@ -31,7 +31,8 @@ CSS, Vitest, `tsx watch`).
 - `<html lang="en">`, a UTF-8 charset, a viewport meta tag, and a `<title>`
   passed in by the page.
 - `<link rel="stylesheet" href="/styles.css">`.
-- A body made of three subcomponents:
+- A body made of three subcomponents, each in its own file under
+  `src/components/`:
   - **Header**: the "AgentClinic" brand, linking to `/`.
   - **Main**: wraps the page's own content.
   - **Footer**: a copyright line, "© <current year> AgentClinic".
@@ -73,8 +74,11 @@ The home page's content, inside the layout, is only:
 - **Hono JSX for views.** `tsconfig.json` sets `"jsx": "react-jsx"` and
   `"jsxImportSource": "hono/jsx"`. Pages and components are `.tsx` files
   rendered on the server; no React and no client bundle.
-- **Components live in `src/components/`.** `Layout.tsx` composes
-  `Header.tsx`, `Main.tsx`, and `Footer.tsx`. Pages such as `src/home.tsx`
+- **One component per file.** The header, main, and footer components each
+  live in their own file in `src/components/`: `Header.tsx`, `Main.tsx`, and
+  `Footer.tsx`. Each file exports only its component. `Layout.tsx` is a
+  separate file that imports and composes them; none of the three are
+  defined inline in `Layout.tsx` or in a page. Pages such as `src/home.tsx`
   wrap their content in `Layout`.
 - **App and server are separate.** `src/app.ts` builds and exports the Hono
   app; `src/index.ts` starts the Node server. Tests import the app and call

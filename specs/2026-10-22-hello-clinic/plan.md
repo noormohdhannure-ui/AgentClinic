@@ -20,13 +20,17 @@ merge checklist.
 
 ## 3. Build the main layout component
 
+Each component goes in its own file in `src/components/`, exporting only
+that component.
+
 1. Create `src/components/Header.tsx`: a `<header class="site-header">` with
    an "AgentClinic" brand link to `/`.
 2. Create `src/components/Main.tsx`: a `<main class="site-main">` that renders
    its `children`.
 3. Create `src/components/Footer.tsx`: a `<footer class="site-footer">` with
    a copyright line for the current year.
-4. Create `src/components/Layout.tsx` taking `title` and `children`. It renders
+4. Create `src/components/Layout.tsx` taking `title` and `children`. It
+   imports `Header`, `Main`, and `Footer` from their files and renders
    the HTML5 document (`lang="en"`, UTF-8 charset, viewport meta, `<title>`),
    links the stylesheet, and composes `<Header />`, `<Main>{children}</Main>`,
    and `<Footer />` in the body.

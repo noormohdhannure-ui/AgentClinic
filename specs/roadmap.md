@@ -4,7 +4,9 @@ High-level implementation order. Each phase is small and ends with something
 visible in the browser. Finish one phase, keeping build and tests green,
 before starting the next.
 
-## Phase 1: Hello, clinic
+## Phase 1: Hello, clinic (complete)
+
+Spec: `specs/2026-10-22-hello-clinic/`
 
 - Add Hono and serve a single "AgentClinic" home page.
 - Main layout component with header, main, and footer subcomponents.

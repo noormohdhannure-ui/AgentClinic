@@ -41,8 +41,11 @@ This phase can be merged when every item below is true.
 
 - [ ] `package.json` has `"type": "module"` and the `dev`, `build`, `start`,
       and `test` scripts.
-- [ ] `Layout` is composed of the `Header`, `Main`, and `Footer`
-      subcomponents in `src/components/`.
+- [ ] `Header`, `Main`, and `Footer` are each in their own file
+      (`src/components/Header.tsx`, `Main.tsx`, `Footer.tsx`), and each file
+      exports only that component.
+- [ ] `Layout.tsx` imports the three components from those files and does
+      not define any of them inline.
 - [ ] The home page content is only the heading and tagline. The only link is
       the header's brand link, and there is no client-side JavaScript.
 - [ ] No navigation, database, or extra routes were added; those belong to
