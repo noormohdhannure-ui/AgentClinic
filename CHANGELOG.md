@@ -23,3 +23,16 @@ All notable changes to AgentClinic, newest first.
   the responsive rules.
 - Added a `/changelog` skill that keeps this file up to date before each
   merge.
+- Added the MVP spec (`specs/2026-10-22-mvp/`), covering roadmap Phases
+  2–7: the full care loop from finding an agent to reporting an ailment,
+  seeing recommended therapies, booking, and cancelling an appointment.
+  It splits Phase 2 into smaller steps, and settles the data model, seed
+  data, free date-and-time booking, and post-then-redirect forms.
+- Planned an accessibility base for the MVP from a UX review: link and
+  focus styles, a skip link, `color-scheme`, and lining up the header with
+  the page content.
+- Planned two test-tooling fixes from a code review: stripping CSS comments
+  before the contrast tests read colors, and type-checking the test files.
+- Set the MVP's merge bar: an end-to-end care-loop test, a test that no
+  page ships client JavaScript, and a manual responsive check of every new
+  page in light and dark mode.
